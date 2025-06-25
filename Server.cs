@@ -26,6 +26,16 @@ swytchApp.AddDatastore("Data Source=blog.db; foreign keys=true", DatabaseProvide
 ServiceCollection serviceContainer = new ServiceCollection();
 //Register services here
 serviceContainer.AddSingleton<ISwytchApp>(swytchApp);
+
+
+
+//register the blog psot repo here  -- remember for scoped sevices , create secondary scope to use 
+//register the projects repo here 
+//register the repoevent repo here
+//
+//
+
+
 serviceContainer.AddLogging(builder =>
 {
     builder.AddConsole();
