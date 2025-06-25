@@ -5,6 +5,7 @@ using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Site.Helpers;
+using Site.Services;
 using Swytch.App;
 using Swytch.Extensions;
 using Swytch.Structures;
@@ -26,6 +27,7 @@ swytchApp.AddDatastore("Data Source=blog.db; foreign keys=true", DatabaseProvide
 ServiceCollection serviceContainer = new ServiceCollection();
 //Register services here
 serviceContainer.AddSingleton<ISwytchApp>(swytchApp);
+serviceContainer.AddScoped<IBlogPostService, BlogPostService>();
 
 
 
@@ -52,17 +54,33 @@ var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 //Routes and action registration
 swytchApp.AddAction("GET", "/", async (context) =>
 {
-    await context.WriteHtmlToStream("<h1>home</h1>", HttpStatusCode.OK);
+
+    await context.WriteHtmlToStream(
+        "<a href='/posts'>posts </a><br><a href='/post/top-5-tips-for-clean-csharp-code'>post/top-5-tips-for-clean-csharp-code</a>",
+        HttpStatusCode.OK);
 });
 
 swytchApp.AddAction("GET", "/posts", async (context) =>
 {
-    await context.WriteTextToStream("posts", HttpStatusCode.OK);
+    logger.LogInformation("blog posts request");
+
+    using var scope = serviceProvider.CreateScope();
+    var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+    var r = await blogPostService.GetBlogPostsAsync();
+
+    await context.ToOk(r);
 });
 
 swytchApp.AddAction("GET", "/post/{slug}", async (context) =>
 {
-    await context.WriteTextToStream($"post number {context.PathParams["slug"]}", HttpStatusCode.OK);
+
+    logger.LogInformation("Blog Post Request");
+
+    using var scope = serviceProvider.CreateScope();
+    var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+    var r = await blogPostService.GetBlogPostAsync(context.PathParams["slug"]);
+
+    await context.ToOk(r);
 });
 
 swytchApp.AddAction("GET", "/projects", async (context) =>
