@@ -2,9 +2,11 @@
 // GitHub Repository:https://github.com/Gwali-1/Swytch.git 
 
 using System.Net;
+using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Site.Helpers;
+using Site.Models;
 using Site.Services;
 using Swytch.App;
 using Swytch.Extensions;
@@ -25,17 +27,13 @@ swytchApp.AddDatastore("Data Source=blog.db; foreign keys=true", DatabaseProvide
 
 //Set up service container
 ServiceCollection serviceContainer = new ServiceCollection();
+
 //Register services here
 serviceContainer.AddSingleton<ISwytchApp>(swytchApp);
 serviceContainer.AddScoped<IBlogPostService, BlogPostService>();
+serviceContainer.AddScoped<IProjectsService, ProjectsService>();
 
 
-
-//register the blog psot repo here  -- remember for scoped sevices , create secondary scope to use 
-//register the projects repo here 
-//register the repoevent repo here
-//
-//
 
 
 serviceContainer.AddLogging(builder =>
@@ -54,11 +52,12 @@ var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 //Routes and action registration
 swytchApp.AddAction("GET", "/", async (context) =>
 {
-
-    await context.WriteHtmlToStream(
-        "<a href='/posts'>posts </a><br><a href='/post/top-5-tips-for-clean-csharp-code'>post/top-5-tips-for-clean-csharp-code</a>",
-        HttpStatusCode.OK);
+    await context.ServeFile("index.html", HttpStatusCode.OK);
 });
+
+
+
+
 
 swytchApp.AddAction("GET", "/posts", async (context) =>
 {
@@ -66,10 +65,14 @@ swytchApp.AddAction("GET", "/posts", async (context) =>
 
     using var scope = serviceProvider.CreateScope();
     var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
-    var r = await blogPostService.GetBlogPostsAsync();
 
-    await context.ToOk(r);
+    var posts = await blogPostService.GetBlogPostsAsync();
+    await context.ToOk(posts);
 });
+
+
+
+
 
 swytchApp.AddAction("GET", "/post/{slug}", async (context) =>
 {
@@ -78,17 +81,64 @@ swytchApp.AddAction("GET", "/post/{slug}", async (context) =>
 
     using var scope = serviceProvider.CreateScope();
     var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
-    var r = await blogPostService.GetBlogPostAsync(context.PathParams["slug"]);
 
-    await context.ToOk(r);
+    var blogPost = await blogPostService.GetBlogPostAsync(context.PathParams["slug"]);
+    await context.ToOk(blogPost);
 });
+
+
+
+
 
 swytchApp.AddAction("GET", "/projects", async (context) =>
 {
-    await context.WriteTextToStream("projects", HttpStatusCode.OK);
+
+    logger.LogInformation("Projects request");
+
+    using var scope = serviceProvider.CreateScope();
+    var projectService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
+
+    var projects = await projectService.GetProjectsAsync();
+    await context.ToOk(projects);
 });
 
-swytchApp.AddAction("GET", "/repoevent", async (context) =>
+
+
+swytchApp.AddAction("POST", "/project", async (context) =>
+{
+    logger.LogInformation("Add Project Request");
+
+    using var scope = serviceProvider.CreateScope();
+    var projectService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
+
+    var newProject = context.ReadJsonBody<Project>();
+    logger.LogInformation("deserialized => {req}", JsonSerializer.Serialize(newProject));
+
+    await projectService.InsertProjectAsync(newProject!);
+    await context.ToOk(new { message = "Project added successfully" });
+});
+
+
+
+swytchApp.AddAction("POST", "/post", async (context) =>
+{
+    logger.LogInformation("Add blog post Request");
+
+    using var scope = serviceProvider.CreateScope();
+    var blogService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+
+
+    var newBlog = context.ReadJsonBody<BlogPost>();
+    logger.LogInformation("deserialized => {req}", JsonSerializer.Serialize(newBlog));
+
+    await blogService.InsertBlogPostAsync(newBlog!);
+    await context.ToOk(new { message = "Blog post added successfully" });
+});
+
+
+
+
+swytchApp.AddAction("POST", "/repoevent", async (context) =>
 {
     await context.WriteTextToStream("repoevent", HttpStatusCode.OK);
 });

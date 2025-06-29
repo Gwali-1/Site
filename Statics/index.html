@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Project</title>
+</head>
+<body>
+
+    <h2>Add a New Project</h2>
+
+    <form id="addProjectForm">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="Name" required><br><br>
+
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="Description" required></textarea><br><br>
+
+        <label for="url">URL:</label><br>
+        <input type="text" id="url" name="Url"><br><br>
+
+        <label for="image">Image URL:</label><br>
+        <input type="text" id="image" name="Image"><br><br>
+
+        <button type="submit">Add Project</button>
+    </form>
+
+    <h2>Add a New BlogPost</h2>
+
+    <form id="addBlogForm">
+        <label for="name">Title:</label><br>
+        <input type="text" id="name" name="Title" required><br><br>
+
+        <label for="description">Content:</label><br>
+        <textarea id="description" name="Content" required></textarea><br><br>
+
+        <label for="url">Tags:</label><br>
+        <input type="text" id="url" name="Tags"><br><br>
+
+        <label for="image">Slug:</label><br>
+        <input type="text" id="image" name="Slug"><br><br>
+
+        <label for="data">Date:</label><br>
+        <input type="text" id="date" name="Date"><br><br>
+
+        <button type="submit">Add Project</button>
+    </form>
+
+    <h2>Links</h2>
+    <a href="/posts">All posts</a>
+    <a href="/post/<slug>">post/slug</a>
+
+    <script>
+        document.getElementById('addProjectForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const project = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/project', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(project)
+                });
+
+                if (response.ok) {
+                    alert('Project added successfully!');
+                    event.target.reset();
+                } else {
+                    const error = await response.json();
+                    alert('Error adding project: ' + error.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An unexpected error occurred.');
+            }
+        });
+        document.getElementById('addBlogForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const project = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(project)
+                });
+
+                if (response.ok) {
+                    alert('Project added successfully!');
+                    event.target.reset();
+                } else {
+                    const error = await response.json();
+                    alert('Error adding project: ' + error.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An unexpected error occurred.');
+            }
+        });
+    </script>
+
+</body>
+</html>
