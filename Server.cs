@@ -33,20 +33,19 @@ serviceContainer.AddSingleton<ISwytchApp>(swytchApp);
 serviceContainer.AddScoped<IBlogPostService, BlogPostService>();
 serviceContainer.AddScoped<IProjectsService, ProjectsService>();
 
-
-
-
 serviceContainer.AddLogging(builder =>
 {
     builder.AddConsole();
     builder.SetMinimumLevel(LogLevel.Information);
 });
-
 //Build service provider
 IServiceProvider serviceProvider = serviceContainer.BuildServiceProvider();
-
 //Retrieving registered service
 var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+
+
+
 
 
 //Routes and action registration
@@ -54,8 +53,6 @@ swytchApp.AddAction("GET", "/", async (context) =>
 {
     await context.ServeFile("index.html", HttpStatusCode.OK);
 });
-
-
 
 
 
@@ -72,8 +69,6 @@ swytchApp.AddAction("GET", "/posts", async (context) =>
 
 
 
-
-
 swytchApp.AddAction("GET", "/post/{slug}", async (context) =>
 {
 
@@ -85,8 +80,6 @@ swytchApp.AddAction("GET", "/post/{slug}", async (context) =>
     var blogPost = await blogPostService.GetBlogPostAsync(context.PathParams["slug"]);
     await context.ToOk(blogPost);
 });
-
-
 
 
 
@@ -137,11 +130,12 @@ swytchApp.AddAction("POST", "/post", async (context) =>
 
 
 
-
 swytchApp.AddAction("POST", "/repoevent", async (context) =>
 {
     await context.WriteTextToStream("repoevent", HttpStatusCode.OK);
 });
+
+
 
 
 
