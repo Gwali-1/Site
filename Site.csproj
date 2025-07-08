@@ -23,6 +23,8 @@
     
     <ItemGroup>
         <PackageReference Include="Swytch" Version="1.0.0" />
+        <PackageReference Include="Flurl.Http" Version="4.0.0" />
+        <PackageReference Include="YamlDotNet" Version="13.7.1" />
     </ItemGroup>
 
 </Project>

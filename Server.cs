@@ -32,6 +32,8 @@ ServiceCollection serviceContainer = new ServiceCollection();
 serviceContainer.AddSingleton<ISwytchApp>(swytchApp);
 serviceContainer.AddScoped<IBlogPostService, BlogPostService>();
 serviceContainer.AddScoped<IProjectsService, ProjectsService>();
+serviceContainer.AddScoped<IRepoEventService, RepoEventService>();
+
 
 serviceContainer.AddLogging(builder =>
 {
@@ -42,6 +44,7 @@ serviceContainer.AddLogging(builder =>
 IServiceProvider serviceProvider = serviceContainer.BuildServiceProvider();
 //Retrieving registered service
 var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
 
 
 
@@ -132,7 +135,50 @@ swytchApp.AddAction("POST", "/post", async (context) =>
 
 swytchApp.AddAction("POST", "/repoevent", async (context) =>
 {
-    await context.WriteTextToStream("repoevent", HttpStatusCode.OK);
+
+    logger.LogInformation("Received a repo event from github");
+
+    var jsonBody = context.ReadJsonBody<GitHubPushEvent>();
+    if (jsonBody?.Repository?.Full_Name is null)
+    {
+        logger.LogInformation("push event content is null");
+        return;
+    }
+
+    logger.LogInformation(jsonBody.Repository.Full_Name);
+
+
+    //
+    var commit = jsonBody.Commits[0];
+    logger.LogInformation($"Commit count -> {jsonBody.Commits.Count}");
+
+
+    var added = commit.Added;
+    var modified = commit.Modified;
+
+
+
+    using var scope = serviceProvider.CreateScope();
+    var repoService = scope.ServiceProvider.GetRequiredService<IRepoEventService>();
+
+    await repoService.HandleModifiedAsync(modified[0], "main");
+
+    //
+    // logger.LogInformation("logging added files");
+    // foreach (var item in added)
+    // {
+    //     logger.LogInformation(item);
+    //
+    // }
+    //
+    // logger.LogInformation("logging modified files");
+    //
+    // foreach (var item in modified)
+    // {
+    //     logger.LogInformation(item);
+    //
+    // }
+
 });
 
 
@@ -144,4 +190,5 @@ DatabaseHelper.CreateTablesIfNotExist(swytchApp);
 DatabaseHelper.InsertSampleTestDataInDatabase(swytchApp);
 
 //Start app
-await swytchApp.Listen();
+await swytchApp.Listen("http://+:8080/");
+
