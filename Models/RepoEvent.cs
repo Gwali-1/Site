@@ -24,11 +24,11 @@ public class Commit
     [JsonPropertyName("id")]
     public string? Id { get; set; }
     [JsonPropertyName("added")]
-    public List<string>? Added { get; set; }
+    public List<string> Added { get; set; } = new List<string>();
     [JsonPropertyName("modified")]
-    public List<string>? Modified { get; set; }
+    public List<string> Modified { get; set; } = new List<string>();
     [JsonPropertyName("removed")]
-    public List<string>? Removed { get; set; }
+    public List<string> Removed { get; set; } = new List<string>();
 }
 
 

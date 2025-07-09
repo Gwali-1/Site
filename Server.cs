@@ -2,7 +2,9 @@
 // GitHub Repository:https://github.com/Gwali-1/Swytch.git 
 
 using System.Net;
+using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Site.Helpers;
@@ -33,6 +35,7 @@ serviceContainer.AddSingleton<ISwytchApp>(swytchApp);
 serviceContainer.AddScoped<IBlogPostService, BlogPostService>();
 serviceContainer.AddScoped<IProjectsService, ProjectsService>();
 serviceContainer.AddScoped<IRepoEventService, RepoEventService>();
+serviceContainer.AddSingleton<IAuthenticationHelper, AuthenticationHelper>();
 
 
 serviceContainer.AddLogging(builder =>
@@ -42,8 +45,15 @@ serviceContainer.AddLogging(builder =>
 });
 //Build service provider
 IServiceProvider serviceProvider = serviceContainer.BuildServiceProvider();
+
 //Retrieving registered service
 var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+//configuration
+var config = new ConfigurationBuilder().AddJsonFile("config.json", reloadOnChange: true, optional: false).Build();
+var secret = config.GetValue<string>("Secret");
+
+
 
 
 
@@ -136,11 +146,53 @@ swytchApp.AddAction("POST", "/post", async (context) =>
 swytchApp.AddAction("POST", "/repoevent", async (context) =>
 {
 
+
     logger.LogInformation("Received a repo event from github");
 
-    var jsonBody = context.ReadJsonBody<GitHubPushEvent>();
+    //authenticate the request is from github
+    logger.LogInformation("Authenticating the request");
 
-    if (jsonBody?.Commits is null)
+    var hashHeader = context.Request.Headers["X-Hub-Signature-256"];
+    if (string.IsNullOrEmpty(hashHeader))
+    {
+        logger.LogInformation("X-Hub-Signature-256 header is missing from request, ending process");
+        return;
+    }
+
+    if (string.IsNullOrEmpty(secret))
+    {
+        logger.LogInformation("Secret value from config is null or empty, ending processs");
+        return;
+    }
+
+    var requestBody = context.ReadJsonBody();
+
+
+    //compute hash
+    var authHelper = serviceProvider.GetRequiredService<IAuthenticationHelper>();
+    var computedHash = authHelper.GetHashofBody(secret, requestBody);
+
+    //compare the hashes 
+    var headerHashSignature = authHelper.StringToByteArray(hashHeader.Split("=")[1]);
+    var isAuthenticatedRequest = authHelper.CompareHashes(headerHashSignature, computedHash);
+
+
+    if (!isAuthenticatedRequest)
+    {
+        logger.LogInformation("Webhook request not authenticated as request from github, ending process");
+        return;
+    }
+
+    logger.LogInformation("Event authenticated successfully, will proceed to handle");
+
+
+
+
+
+
+    //handle event
+    var eventBody = JsonSerializer.Deserialize<GitHubPushEvent>(requestBody);
+    if (eventBody?.Commits is null)
     {
         logger.LogInformation("Commits in repo event is null, ending process");
         return;
@@ -150,16 +202,14 @@ swytchApp.AddAction("POST", "/repoevent", async (context) =>
     using var scope = serviceProvider.CreateScope();
     var repoService = scope.ServiceProvider.GetRequiredService<IRepoEventService>();
 
-
-
-    var commit = jsonBody.Commits[0];
-    var added = commit.Added?[0];
-    var modified = commit.Modified?[0];
+    var commit = eventBody.Commits[0];
+    var added = commit.Added.Count == 0 ? null : commit.Added[0];
+    var modified = commit.Modified.Count == 0 ? null : commit.Modified[0];
 
     if (added is not null && added.StartsWith("Posts/"))
     {
         logger.LogInformation("Adding new blog entry => {name}", added);
-        await repoService.HandleAddedAsync(added, "main");
+        await repoService.HandleAddedProjectAsync(added, "main");
     }
 
 
@@ -169,12 +219,10 @@ swytchApp.AddAction("POST", "/repoevent", async (context) =>
         await repoService.HandleModifiedBlogAsync(modified, "main");
     }
 
-
-
     if (added is not null && added.StartsWith("Projects/"))
     {
         logger.LogInformation("Adding new  project entry entry => {name}", modified);
-        //update project table here 
+        await repoService.HandleAddedProjectAsync(added, "main");
     }
 
     logger.LogInformation("Done handling repo event hook from github");

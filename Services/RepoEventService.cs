@@ -1,4 +1,5 @@
 
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Site.Models;
@@ -23,13 +24,13 @@ namespace Site.Services
             _projectsService = projectsService;
         }
 
-        public async Task HandleAddedAsync(string filePath, string branch)
+        public async Task HandleAddedBlogAsync(string filePath, string branch)
         {
             _logger.LogInformation("Handling added file: {FilePath} in branch: {Branch}", filePath, branch);
             try
             {
                 //get content
-                var stringContent = await GetBlogPostFromGithub(filePath, branch);
+                var stringContent = await GetFileContentFromGithub(filePath, branch);
                 //parse the content
                 var blogPost = ParseFrontMatter(stringContent);
                 //insert into db
@@ -53,7 +54,7 @@ namespace Site.Services
             try
             {
                 //get content
-                var stringContent = await GetBlogPostFromGithub(filePath, branch);
+                var stringContent = await GetFileContentFromGithub(filePath, branch);
                 //parse the content
                 var blogPost = ParseFrontMatter(stringContent);
                 //insert into db
@@ -71,7 +72,42 @@ namespace Site.Services
             }
         }
 
-        private async Task<string> GetBlogPostFromGithub(string filePath, string branch)
+
+
+        public async Task HandleAddedProjectAsync(string filePath, string branch)
+        {
+            _logger.LogInformation("Handling added project: {FilePath} in branch: {Branch}", filePath, branch);
+            try
+            {
+                var stringContent = await GetFileContentFromGithub(filePath, branch);
+
+                var project = ParseProjectFile(stringContent);
+                if (string.IsNullOrEmpty(project.Name))
+                {
+                    _logger.LogInformation("Could not parse the project file");
+                    return;
+
+                }
+
+                var inserted = await _projectsService.InsertProjectAsync(project);
+                if (!inserted)
+                {
+                    _logger.LogInformation("Could not add new project: {Name}", project.Name);
+                    return;
+                }
+
+                _logger.LogInformation("Successfully added project: {Name}", project.Name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error handling added project: {FilePath}", filePath);
+            }
+        }
+
+
+
+
+        private async Task<string> GetFileContentFromGithub(string filePath, string branch)
         {
             var rawUrl = $"https://raw.githubusercontent.com/{Owner}/{Repo}/{branch}/{filePath}";
 
@@ -110,5 +146,12 @@ namespace Site.Services
             }
             throw new Exception("Could not parse front matter");
         }
+
+        private Project ParseProjectFile(string fileContent)
+        {
+            var project = JsonSerializer.Deserialize<Project>(fileContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return project ?? new Project();
+        }
+
     }
 }
