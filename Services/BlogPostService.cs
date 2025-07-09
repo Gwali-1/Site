@@ -26,6 +26,7 @@ public class BlogPostService : IBlogPostService
         try
         {
             using var dbcontext = _app.GetConnection(DatabaseProviders.SQLite);
+
             string query = "SELECT Title, Tags, Date, Slug FROM BlogPosts ORDER BY Date DESC";
 
             var result = await dbcontext.QueryAsync<BlogPost>(query);
@@ -81,6 +82,25 @@ public class BlogPostService : IBlogPostService
         }
     }
 
+
+    //update a blog
+    public async Task<bool> UpdateBlogPostAsync(BlogPost blogPost)
+    {
+        try
+        {
+            using var dbcontext = _app.GetConnection(DatabaseProviders.SQLite);
+            string query = "UPDATE BlogPosts SET Content = @Content WHERE Slug = @Slug";
+
+            var result = await dbcontext.ExecuteAsync(query, new { Content = blogPost.Content, Slug = blogPost.Slug });
+            return 1 == result;
+
+        }
+        catch (System.Exception e)
+        {
+            _logger.LogError(e, "Exception occured when updating a blog post");
+            return false;
+        }
+    }
 
 }
 

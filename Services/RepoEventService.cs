@@ -12,13 +12,15 @@ namespace Site.Services
     {
         private readonly ILogger<RepoEventService> _logger;
         private readonly IBlogPostService _blogPostService;
+        private readonly IProjectsService _projectsService;
         private const string Owner = "Gwali-1";
         private const string Repo = "Blog-Files";
 
-        public RepoEventService(ILogger<RepoEventService> logger, IBlogPostService blogPostService)
+        public RepoEventService(ILogger<RepoEventService> logger, IBlogPostService blogPostService, IProjectsService projectsService)
         {
             _logger = logger;
             _blogPostService = blogPostService;
+            _projectsService = projectsService;
         }
 
         public async Task HandleAddedAsync(string filePath, string branch)
@@ -31,7 +33,12 @@ namespace Site.Services
                 //parse the content
                 var blogPost = ParseFrontMatter(stringContent);
                 //insert into db
-                await _blogPostService.InsertBlogPostAsync(blogPost);
+                var inserted = await _blogPostService.InsertBlogPostAsync(blogPost);
+                if (!inserted)
+                {
+                    _logger.LogInformation("Could not add new blog post: {Title}", blogPost.Title);
+                    return;
+                }
                 _logger.LogInformation("Successfully added blog post: {Title}", blogPost.Title);
             }
             catch (Exception ex)
@@ -40,7 +47,7 @@ namespace Site.Services
             }
         }
 
-        public async Task HandleModifiedAsync(string filePath, string branch)
+        public async Task HandleModifiedBlogAsync(string filePath, string branch)
         {
             _logger.LogInformation("Handling modified file: {FilePath} in branch: {Branch}", filePath, branch);
             try
@@ -50,7 +57,12 @@ namespace Site.Services
                 //parse the content
                 var blogPost = ParseFrontMatter(stringContent);
                 //insert into db
-                await _blogPostService.InsertBlogPostAsync(blogPost);  //change to modified
+                var updated = await _blogPostService.UpdateBlogPostAsync(blogPost);
+                if (!updated)
+                {
+                    _logger.LogInformation("Could not modify blog post: {Title}", blogPost.Title);
+                    return;
+                }
                 _logger.LogInformation("Successfully modified blog post: {Title}", blogPost.Title);
             }
             catch (Exception ex)

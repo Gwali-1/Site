@@ -139,45 +139,47 @@ swytchApp.AddAction("POST", "/repoevent", async (context) =>
     logger.LogInformation("Received a repo event from github");
 
     var jsonBody = context.ReadJsonBody<GitHubPushEvent>();
-    if (jsonBody?.Repository?.Full_Name is null)
+
+    if (jsonBody?.Commits is null)
     {
-        logger.LogInformation("push event content is null");
+        logger.LogInformation("Commits in repo event is null, ending process");
         return;
     }
-
-    logger.LogInformation(jsonBody.Repository.Full_Name);
-
-
-    //
-    var commit = jsonBody.Commits[0];
-    logger.LogInformation($"Commit count -> {jsonBody.Commits.Count}");
-
-
-    var added = commit.Added;
-    var modified = commit.Modified;
-
 
 
     using var scope = serviceProvider.CreateScope();
     var repoService = scope.ServiceProvider.GetRequiredService<IRepoEventService>();
 
-    await repoService.HandleModifiedAsync(modified[0], "main");
 
-    //
-    // logger.LogInformation("logging added files");
-    // foreach (var item in added)
-    // {
-    //     logger.LogInformation(item);
-    //
-    // }
-    //
-    // logger.LogInformation("logging modified files");
-    //
-    // foreach (var item in modified)
-    // {
-    //     logger.LogInformation(item);
-    //
-    // }
+
+    var commit = jsonBody.Commits[0];
+    var added = commit.Added?[0];
+    var modified = commit.Modified?[0];
+
+    if (added is not null && added.StartsWith("Posts/"))
+    {
+        logger.LogInformation("Adding new blog entry => {name}", added);
+        await repoService.HandleAddedAsync(added, "main");
+    }
+
+
+    if (modified is not null && modified.StartsWith("Posts/"))
+    {
+        logger.LogInformation("Updating content of existing blog entry => {name}", modified);
+        await repoService.HandleModifiedBlogAsync(modified, "main");
+    }
+
+
+
+    if (added is not null && added.StartsWith("Projects/"))
+    {
+        logger.LogInformation("Adding new  project entry entry => {name}", modified);
+        //update project table here 
+    }
+
+    logger.LogInformation("Done handling repo event hook from github");
+
+
 
 });
 
