@@ -17,7 +17,8 @@ using Swytch.Structures;
 ISwytchApp swytchApp = new SwytchApp(new SwytchConfig
 {
     EnableStaticFileServer = true,
-    StaticCacheMaxAge = "10"
+    StaticCacheMaxAge = "1",
+    PrecompileTemplates = true
 });
 
 //Enable request logging
@@ -64,8 +65,53 @@ var secret = config.GetValue<string>("Secret");
 swytchApp.AddAction("GET", "/", async (context) =>
 {
     //TODO fetch correct data and return
-    await context.ServeFile("index.html", HttpStatusCode.OK);
+    //
+
+    using var scope = serviceProvider.CreateScope();
+    var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+    var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
+
+    await swytchApp.RenderTemplate<object>(context, "Home", null);
+
 });
+swytchApp.AddAction("GET", "/blog", async (context) =>
+{
+    //TODO fetch correct data and return
+    //
+
+    using var scope = serviceProvider.CreateScope();
+    var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+    var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
+
+    await swytchApp.RenderTemplate<object>(context, "Blog", null);
+
+});
+
+swytchApp.AddAction("GET", "/projects", async (context) =>
+{
+    //TODO fetch correct data and return
+    //
+
+    using var scope = serviceProvider.CreateScope();
+    var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+    var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
+
+    await swytchApp.RenderTemplate<object>(context, "Projects", null);
+
+});
+
+swytchApp.AddAction("GET", "/about", async (context) =>
+{
+    //TODO fetch correct data and return
+
+    using var scope = serviceProvider.CreateScope();
+    var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+    var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
+
+    await swytchApp.RenderTemplate<object>(context, "About", null);
+
+});
+
 
 
 
