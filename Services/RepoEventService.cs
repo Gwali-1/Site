@@ -101,6 +101,36 @@ namespace Site.Services
             }
         }
 
+        public async Task HandleModifiedProjectAsync(string filePath, string branch)
+        {
+            _logger.LogInformation("Handling modified project: {FilePath} in branch: {Branch}", filePath, branch);
+            try
+            {
+                var stringContent = await GetFileContentFromGithub(filePath, branch);
+
+                var project = ParseProjectFile(stringContent);
+                if (string.IsNullOrEmpty(project.Name))
+                {
+                    _logger.LogInformation("Could not parse the project file");
+                    return;
+                }
+
+                var inserted = await _projectsService.UpdateProjectAsync(project);
+                if (!inserted)
+                {
+                    _logger.LogInformation("Error handling modified project: {Name}", project.Name);
+                    return;
+                }
+
+                _logger.LogInformation("Successfully modified project: {Name}", project.Name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error handling modified project: {FilePath}", filePath);
+            }
+        }
+
+
 
 
 

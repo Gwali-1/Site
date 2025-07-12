@@ -206,6 +206,7 @@ swytchApp.AddAction("POST", "/repoevent", async (context) =>
     var added = commit.Added.Count == 0 ? null : commit.Added[0];
     var modified = commit.Modified.Count == 0 ? null : commit.Modified[0];
 
+    //added post
     if (added is not null && added.StartsWith("Posts/"))
     {
         logger.LogInformation("Adding new blog entry => {name}", added);
@@ -213,16 +214,25 @@ swytchApp.AddAction("POST", "/repoevent", async (context) =>
     }
 
 
+    //modified post
     if (modified is not null && modified.StartsWith("Posts/"))
     {
         logger.LogInformation("Updating content of existing blog entry => {name}", modified);
         await repoService.HandleModifiedBlogAsync(modified, "main");
     }
 
+    //added project
     if (added is not null && added.StartsWith("Projects/"))
     {
         logger.LogInformation("Adding new  project entry entry => {name}", modified);
         await repoService.HandleAddedProjectAsync(added, "main");
+    }
+
+    //modified project
+    if (modified is not null && modified.StartsWith("Projects/"))
+    {
+        logger.LogInformation("Updating details of existing project => {name}", modified);
+        await repoService.HandleModifiedProjectAsync(modified, "main");
     }
 
     logger.LogInformation("Done handling repo event hook from github");

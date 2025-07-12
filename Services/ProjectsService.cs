@@ -59,4 +59,24 @@ public class ProjectsService : IProjectsService
         }
     }
 
+
+    //update a prject
+    public async Task<bool> UpdateProjectAsync(Project project)
+    {
+        try
+        {
+            using var dbcontext = _app.GetConnection(DatabaseProviders.SQLite);
+            string query = "UPDATE Projects SET Url = @Url, Image =@Image, Description = @Description WHERE Name= @Name";
+
+            var result = await dbcontext.ExecuteAsync(query, new { Url = project.Url, Image = project.Image, Description = project.Description, Name = project.Name });
+            return 1 == result;
+
+        }
+        catch (System.Exception e)
+        {
+            _logger.LogError(e, "Exception occured when updating a  project");
+            return false;
+        }
+    }
+
 }
