@@ -71,7 +71,7 @@ public class BlogPostService : IBlogPostService
 
             var result = await dbcontext.ExecuteAsync(
                 query,
-                new { Title = blogPost.Title, Tags = blogPost.Title, Content = blogPost.Content, Slug = blogPost.Slug, Date = blogPost.Date });
+                new { Title = blogPost.Title, Tags = blogPost.Tags, Content = blogPost.Content, Slug = blogPost.Slug, Date = blogPost.Date });
             return 1 == result;
 
         }

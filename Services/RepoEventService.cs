@@ -72,8 +72,6 @@ namespace Site.Services
             }
         }
 
-
-
         public async Task HandleAddedProjectAsync(string filePath, string branch)
         {
             _logger.LogInformation("Handling added project: {FilePath} in branch: {Branch}", filePath, branch);
@@ -86,7 +84,6 @@ namespace Site.Services
                 {
                     _logger.LogInformation("Could not parse the project file");
                     return;
-
                 }
 
                 var inserted = await _projectsService.InsertProjectAsync(project);

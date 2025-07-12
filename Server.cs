@@ -2,7 +2,6 @@
 // GitHub Repository:https://github.com/Gwali-1/Swytch.git 
 
 using System.Net;
-using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,6 +63,7 @@ var secret = config.GetValue<string>("Secret");
 //Routes and action registration
 swytchApp.AddAction("GET", "/", async (context) =>
 {
+    //TODO fetch correct data and return
     await context.ServeFile("index.html", HttpStatusCode.OK);
 });
 
@@ -147,7 +147,7 @@ swytchApp.AddAction("POST", "/repoevent", async (context) =>
 {
 
 
-    logger.LogInformation("Received a repo event from github");
+    logger.LogInformation("Received a repo webhook event from github");
 
     //authenticate the request is from github
     logger.LogInformation("Authenticating the request");
@@ -209,7 +209,7 @@ swytchApp.AddAction("POST", "/repoevent", async (context) =>
     if (added is not null && added.StartsWith("Posts/"))
     {
         logger.LogInformation("Adding new blog entry => {name}", added);
-        await repoService.HandleAddedProjectAsync(added, "main");
+        await repoService.HandleAddedBlogAsync(added, "main");
     }
 
 
