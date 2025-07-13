@@ -6,25 +6,30 @@
     <title>Gwalisam</title>
     <link href="/swytchserver/static/style.css" rel="stylesheet">
     <!-- <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@@4"></script> -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/iosevka/1.14.1/iosevka.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   </head>
-  <body class="">
+  <body class="bg-[#D3DBDD] font-[iosevka]">
     <header class=" container mx-auto max-w-4xl">
-      <nav class="hover-link flex items-center gap-2 pt-6">
+      <nav class="hover-link flex items-center gap-3 pt-6 text-xl font-normal">
         <a href="/" class="hover:underline" >Home</a>
         <a href="/blog" class="hover:underline">Blog</a>
         <a href="/projects" class="hover:underline">Projects</a>
-        <a href="/about" class="border-b-2 border-transparent hover:border-indigo-500">About</a>
+        <a href="/about" class="hover:underline">About</a>
       </nav>
     </header>
     <div class="container mx-auto max-w-4xl"> 
         @RenderBody()
     </div>
 
-    <footer class="container mx-auto mb-4 max-w-4xl">
+    <footer class="container mx-auto mb-4 max-w-4xl pt-12">
+
+      <div class="bg-[#233038] p-6 text-white">
+        
       Powered by swytch &copy; <span id="year">2025</span>
+      </div>
     </footer>
 
   </body>
