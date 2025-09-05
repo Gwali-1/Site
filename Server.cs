@@ -1,7 +1,6 @@
 ﻿// This template file is auto-generated.
 // GitHub Repository:https://github.com/Gwali-1/Swytch.git 
 
-using System.Net;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -71,7 +70,24 @@ swytchApp.AddAction("GET", "/", async (context) =>
     var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
     var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
 
-    await swytchApp.RenderTemplate<object>(context, "Home", null);
+    var allBlogs = await blogPostService.GetBlogPostsAsync();
+    var blogs = allBlogs.Take(3).ToList();
+
+
+    var allProjects = await projectsService.GetProjectsAsync();
+    var projects = allProjects.Take(3).ToList();
+
+    var dataContext = new HomeDataContext
+    {
+        Blogs = blogs,
+        Projects = projects
+    };
+
+
+    var e = await swytchApp.GenerateTemplate("Home", dataContext);
+    Console.WriteLine(e);
+    await swytchApp.RenderTemplate<object>(context, "Home", dataContext);
+
 
 });
 swytchApp.AddAction("GET", "/blog", async (context) =>
