@@ -10,10 +10,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-[#D3DBDD] font-[iosevka]">
-    <header class=" container mx-auto max-w-4xl p-4">
-      <nav class="hover-link flex items-center gap-3 pt-8 text-xl font-normal">
+  <body class="bg-[#D3DBDD] font-[Inter]">
+    <header class=" container mx-auto  font-[iosevka] max-w-4xl p-4">
+      <nav class="hover-link flex items-center gap-3 pt-8 text-xl font-bold">
         <a href="/" class="hover:underline" >Home</a>
         <a href="/blog" class="hover:underline">Blog</a>
         <a href="/projects" class="hover:underline">Projects</a>
@@ -27,11 +29,14 @@
     <footer class="container mx-auto mb-1 max-w-4xl pt-12">
 
       <div class="bg-[#233038] p-6 text-white">
-      &copy; <span id="year">2025</span> Gwalisam<br>
+      &copy; <span id="year"></span> Matthew Gwalisam.All rights reserved.<br>
       <span class="text-sm">Built with Swytch X Tailwindcss X HTMX </span><br>
      <span class = "text-sm hover:text-[#075056]">source code: <a href="https://github.com/Gwali-1/Site">https://github.com/Gwali-1/Site</a></span>
       </div>
     </footer>
+    <script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 
   </body>
 </html>

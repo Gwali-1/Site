@@ -1,4 +1,5 @@
 
+namespace Site.Models;
 using System.Text.Json.Serialization;
 
 public class GitHubPushEvent

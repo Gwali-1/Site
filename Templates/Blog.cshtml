@@ -2,6 +2,8 @@
   Layout = "Layout.cshtml";
 }
 
+@model List<Site.Models.BlogPost>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -15,37 +17,30 @@
     <div class="pt-12 flex flex-col">
 
         <div class="flex items-center gap-2">
-        <h2 class="text-xl font-bold mb-0 text[#233038]">3 Posts</h2>
+        <h2 class="text-xl font-bold font-[iosevka] mb-0 text[#233038]">@Model.Count Posts</h2>
         <img src="/swytchserver/static/desk-lamp.svg" class="w-8 h-8" alt="lamp">
         </div>
 
       <div class="container pb-6 md:w-1/2 w-full mr-auto" >
         <p class="text-sm text-gray-600">
           It's not often that I write or have something to say, but I've come to realize it is important 
-          to recognize your own thoughts.I share my opinions, life experiences and technical learnings on this page.
+          to recognize your own thoughts. I share my opinions, life experiences and technical learnings on this page, both raw 
+          and refined.
         </p>
       </div>
 
         <div class="container mx-auto pt-12 pb-10">
           <ul class="flex flex-col gap-2 pt-5">
-            <li class="w-full md:w-2/3">
-              <a href="#" class="flex justify-between items-center hover:underline">
-                <span class="font-medium">New Blog Post Title</span>
-                <span class="text-gray-500 text-sm">July 12, 2025</span>
-              </a>
-            </li>
-            <li class="w-full md:w-2/3">
-              <a href="#" class="flex justify-between items-center hover:underline">
-                <span class="font-medium">New Blog Post Title</span>
-                <span class="text-gray-500 text-sm">July 12, 2025</span>
-              </a>
-            </li>
-            <li class="w-full md:w-2/3">
-              <a href="#" class="flex justify-between items-center hover:underline">
-                <span class="font-medium">New Blog Post Title</span>
-                <span class="text-gray-500 text-sm">July 12, 2025</span>
-              </a>
-            </li>
+
+            @foreach(var blog in @Model)
+            {
+              <li class="w-full md:w-2/3">
+                <a href="/post/@blog.Slug" class="flex justify-between items-center hover:underline">
+                  <span class="font-medium">@blog.Title</span>
+                  <span class="text-gray-500 text-sm">@blog.Date</span>
+                </a>
+              </li>
+            }
           </ul>
         </div>
 

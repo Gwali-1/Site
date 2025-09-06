@@ -11,6 +11,7 @@ using Site.Services;
 using Swytch.App;
 using Swytch.Extensions;
 using Swytch.Structures;
+using Markdig;
 
 
 ISwytchApp swytchApp = new SwytchApp(new SwytchConfig
@@ -52,6 +53,12 @@ var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 var config = new ConfigurationBuilder().AddJsonFile("config.json", reloadOnChange: true, optional: false).Build();
 var secret = config.GetValue<string>("Secret");
 
+
+
+//Markdig
+var pipeline = new MarkdownPipelineBuilder()
+    .UseAdvancedExtensions()
+    .Build();
 
 
 
@@ -99,7 +106,10 @@ swytchApp.AddAction("GET", "/blog", async (context) =>
     var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
     var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
 
-    await swytchApp.RenderTemplate<object>(context, "Blog", null);
+
+    var allBlogs = await blogPostService.GetBlogPostsAsync();
+
+    await swytchApp.RenderTemplate<object>(context, "Blog", allBlogs);
 
 });
 
@@ -112,7 +122,10 @@ swytchApp.AddAction("GET", "/projects", async (context) =>
     var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
     var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
 
-    await swytchApp.RenderTemplate<object>(context, "Projects", null);
+
+    var allProjects = await projectsService.GetProjectsAsync();
+
+    await swytchApp.RenderTemplate<object>(context, "Projects", allProjects);
 
 });
 
@@ -153,7 +166,13 @@ swytchApp.AddAction("GET", "/post/{slug}", async (context) =>
     var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
 
     var blogPost = await blogPostService.GetBlogPostAsync(context.PathParams["slug"]);
-    await context.ToOk(blogPost);
+
+    var mkdToHtml = Markdown.ToHtml(blogPost.Content, pipeline);
+    blogPost.Content = mkdToHtml;
+
+
+    await swytchApp.RenderTemplate<object>(context, "BlogView", blogPost);
+
 });
 
 

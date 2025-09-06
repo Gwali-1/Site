@@ -29,6 +29,7 @@
         <PackageReference Include="Swytch" Version="1.0.0" />
         <PackageReference Include="Flurl.Http" Version="4.0.0" />
         <PackageReference Include="YamlDotNet" Version="13.7.1" />
+        <PackageReference Include="Markdig" Version="0.41.3" />
     </ItemGroup>
 
 </Project>

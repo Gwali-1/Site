@@ -12,6 +12,7 @@ module.exports = {
       },
       fontFamily: {
         iosevka: ['Iosevka', 'sans-serif'],
+        Inter: ['Inter', 'ui-sans-serif', 'system-ui']
       },
     },
   },
