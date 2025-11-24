@@ -13,14 +13,11 @@ public class ProjectsService : IProjectsService
 
     public ProjectsService(ILogger<ProjectsService> logger, ISwytchApp swychApp)
     {
-
         _logger = logger;
         _app = swychApp;
-
     }
 
-
-    public async Task<List<Project>> GetProjectsAsync()
+    public async Task<IReadOnlyList<Project>> GetProjectsAsync()
     {
         try
         {
@@ -37,18 +34,24 @@ public class ProjectsService : IProjectsService
         }
     }
 
-
-
     public async Task<bool> InsertProjectAsync(Project project)
     {
         try
         {
             using var dbcontext = _app.GetConnection(DatabaseProviders.SQLite);
-            string query = "INSERT INTO Projects (Name, Description, Url, Image) VALUES (@Name, @Description, @Url, @Image)";
+            string query =
+                "INSERT INTO Projects (Name, Description, Url, Image) VALUES (@Name, @Description, @Url, @Image)";
 
             var result = await dbcontext.ExecuteAsync(
                 query,
-                new { Name = project.Name, Description = project.Description, Url = project.Url, Image = project.Image });
+                new
+                {
+                    Name = project.Name,
+                    Description = project.Description,
+                    Url = project.Url,
+                    Image = project.Image,
+                }
+            );
 
             return 1 == result;
         }
@@ -59,18 +62,26 @@ public class ProjectsService : IProjectsService
         }
     }
 
-
     //update a prject
     public async Task<bool> UpdateProjectAsync(Project project)
     {
         try
         {
             using var dbcontext = _app.GetConnection(DatabaseProviders.SQLite);
-            string query = "UPDATE Projects SET Url = @Url, Image =@Image, Description = @Description WHERE Name= @Name";
+            string query =
+                "UPDATE Projects SET Url = @Url, Image =@Image, Description = @Description WHERE Name= @Name";
 
-            var result = await dbcontext.ExecuteAsync(query, new { Url = project.Url, Image = project.Image, Description = project.Description, Name = project.Name });
+            var result = await dbcontext.ExecuteAsync(
+                query,
+                new
+                {
+                    Url = project.Url,
+                    Image = project.Image,
+                    Description = project.Description,
+                    Name = project.Name,
+                }
+            );
             return 1 == result;
-
         }
         catch (System.Exception e)
         {
@@ -78,5 +89,4 @@ public class ProjectsService : IProjectsService
             return false;
         }
     }
-
 }

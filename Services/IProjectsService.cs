@@ -4,7 +4,7 @@ namespace Site.Services;
 
 public interface IProjectsService
 {
-    Task<List<Project>> GetProjectsAsync();
+    Task<IReadOnlyList<Project>> GetProjectsAsync();
     Task<bool> InsertProjectAsync(Project project);
     Task<bool> UpdateProjectAsync(Project project);
 }

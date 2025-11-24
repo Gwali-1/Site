@@ -1,9 +1,9 @@
 using Dapper;
 using Microsoft.Extensions.Logging;
 using Site.Models;
+using Site.Services;
 using Swytch.App;
 using Swytch.Structures;
-using Site.Services;
 
 public class BlogPostService : IBlogPostService
 {
@@ -12,16 +12,12 @@ public class BlogPostService : IBlogPostService
 
     public BlogPostService(ILogger<BlogPostService> logger, ISwytchApp swychApp)
     {
-
         _logger = logger;
         _app = swychApp;
-
     }
 
-
-
     //get all blogs
-    public async Task<List<BlogPost>> GetBlogPostsAsync()
+    public async Task<IReadOnlyList<BlogPost>> GetBlogPostsAsync()
     {
         try
         {
@@ -39,18 +35,20 @@ public class BlogPostService : IBlogPostService
         }
     }
 
-
     //get a particular blog
     public async Task<BlogPost> GetBlogPostAsync(string slug)
     {
         try
         {
             using var dbcontext = _app.GetConnection(DatabaseProviders.SQLite);
-            string query = "SELECT Title, Tags, Date, Content FROM BlogPosts Where Slug  = @Slug LIMIT 1";
+            string query =
+                "SELECT Title, Tags, Date, Content FROM BlogPosts Where Slug  = @Slug LIMIT 1";
 
-            var result = await dbcontext.QueryFirstOrDefaultAsync<BlogPost>(query, new { Slug = slug });
+            var result = await dbcontext.QueryFirstOrDefaultAsync<BlogPost>(
+                query,
+                new { Slug = slug }
+            );
             return result is null ? new BlogPost() : result;
-
         }
         catch (System.Exception e)
         {
@@ -59,21 +57,27 @@ public class BlogPostService : IBlogPostService
         }
     }
 
-
-
     //insert a blog
     public async Task<bool> InsertBlogPostAsync(BlogPost blogPost)
     {
         try
         {
             using var dbcontext = _app.GetConnection(DatabaseProviders.SQLite);
-            string query = "INSERT INTO BlogPosts (Title, Tags, Date, Content, Slug) VALUES (@Title, @Tags, @Date, @Content, @Slug)";
+            string query =
+                "INSERT INTO BlogPosts (Title, Tags, Date, Content, Slug) VALUES (@Title, @Tags, @Date, @Content, @Slug)";
 
             var result = await dbcontext.ExecuteAsync(
                 query,
-                new { Title = blogPost.Title, Tags = blogPost.Tags, Content = blogPost.Content, Slug = blogPost.Slug, Date = blogPost.Date });
+                new
+                {
+                    Title = blogPost.Title,
+                    Tags = blogPost.Tags,
+                    Content = blogPost.Content,
+                    Slug = blogPost.Slug,
+                    Date = blogPost.Date,
+                }
+            );
             return 1 == result;
-
         }
         catch (System.Exception e)
         {
@@ -81,7 +85,6 @@ public class BlogPostService : IBlogPostService
             return false;
         }
     }
-
 
     //update a blog
     public async Task<bool> UpdateBlogPostAsync(BlogPost blogPost)
@@ -91,9 +94,11 @@ public class BlogPostService : IBlogPostService
             using var dbcontext = _app.GetConnection(DatabaseProviders.SQLite);
             string query = "UPDATE BlogPosts SET Content = @Content WHERE Slug = @Slug";
 
-            var result = await dbcontext.ExecuteAsync(query, new { Content = blogPost.Content, Slug = blogPost.Slug });
+            var result = await dbcontext.ExecuteAsync(
+                query,
+                new { Content = blogPost.Content, Slug = blogPost.Slug }
+            );
             return 1 == result;
-
         }
         catch (System.Exception e)
         {
@@ -101,6 +106,4 @@ public class BlogPostService : IBlogPostService
             return false;
         }
     }
-
 }
-
