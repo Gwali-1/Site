@@ -1,6 +1,7 @@
 ﻿// This template file is auto-generated.
 // GitHub Repository:https://github.com/Gwali-1/Swytch.git
 
+using System.Net;
 using System.Text.Json;
 using Markdig;
 using Microsoft.Extensions.Configuration;
@@ -65,15 +66,12 @@ swytchApp.AddAction(
     "/",
     async (context) =>
     {
-        //TODO fetch correct data and return
-        //
-
         using var scope = serviceProvider.CreateScope();
         var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
         var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
 
         var allBlogs = await blogPostService.GetBlogPostsAsync();
-        var blogs = allBlogs.Take(3).ToList();
+        var blogs = allBlogs.Take(3).ToList(); //this is bad - should have filtered in db
 
         var allProjects = await projectsService.GetProjectsAsync();
         var projects = allProjects.Take(3).ToList();
@@ -95,7 +93,12 @@ swytchApp.AddAction(
         var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
         var allBlogs = await blogPostService.GetBlogPostsAsync();
 
-        await swytchApp.RenderTemplate<object>(context, "Blog", allBlogs);
+        var allBlogsContent = await swytchApp.GenerateTemplate<IReadOnlyList<BlogPost>>(
+            "Blog",
+            allBlogs
+        );
+
+        await context.WriteTextToStream(allBlogsContent, HttpStatusCode.OK);
     }
 );
 
@@ -114,7 +117,8 @@ swytchApp.AddAction(
         var mkdToHtml = Markdown.ToHtml(blogPost.Content, pipeline);
         blogPost.Content = mkdToHtml;
 
-        await swytchApp.RenderTemplate<object>(context, "BlogView", blogPost);
+        var blogPostView = await swytchApp.GenerateTemplate<BlogPost>("BlogView", blogPost);
+        await context.WriteTextToStream(blogPostView, HttpStatusCode.OK);
     }
 );
 
@@ -138,72 +142,6 @@ swytchApp.AddAction(
     async (context) =>
     {
         await swytchApp.RenderTemplate<object>(context, "About", null);
-    }
-);
-
-swytchApp.AddAction(
-    "GET",
-    "/posts",
-    async (context) =>
-    {
-        logger.LogInformation("blog posts request");
-
-        using var scope = serviceProvider.CreateScope();
-        var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
-
-        var posts = await blogPostService.GetBlogPostsAsync();
-        await context.ToOk(posts);
-    }
-);
-
-swytchApp.AddAction(
-    "GET",
-    "/projects",
-    async (context) =>
-    {
-        logger.LogInformation("Projects request");
-
-        using var scope = serviceProvider.CreateScope();
-        var projectService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
-
-        var projects = await projectService.GetProjectsAsync();
-        await context.ToOk(projects);
-    }
-);
-
-swytchApp.AddAction(
-    "POST",
-    "/project",
-    async (context) =>
-    {
-        logger.LogInformation("Add Project Request");
-
-        using var scope = serviceProvider.CreateScope();
-        var projectService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
-
-        var newProject = context.ReadJsonBody<Project>();
-        logger.LogInformation("deserialized => {req}", JsonSerializer.Serialize(newProject));
-
-        await projectService.InsertProjectAsync(newProject!);
-        await context.ToOk(new { message = "Project added successfully" });
-    }
-);
-
-swytchApp.AddAction(
-    "POST",
-    "/post",
-    async (context) =>
-    {
-        logger.LogInformation("Add blog post Request");
-
-        using var scope = serviceProvider.CreateScope();
-        var blogService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
-
-        var newBlog = context.ReadJsonBody<BlogPost>();
-        logger.LogInformation("deserialized => {req}", JsonSerializer.Serialize(newBlog));
-
-        await blogService.InsertBlogPostAsync(newBlog!);
-        await context.ToOk(new { message = "Blog post added successfully" });
     }
 );
 

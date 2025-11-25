@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gwalisam</title>
     <link href="/swytchserver/static/style.css" rel="stylesheet">
+    <script src="/swytchserver/static/htmx.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@@4"></script> -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,26 +19,29 @@
     <header class=" container mx-auto  font-[noto] max-w-4xl p-4">
       <nav class="hover-link flex items-center gap-3 pt-8 text-xl font-bold">
         <a href="/" class="hover:underline" >Home</a>
-        <a href="/blog" class="hover:underline">Blog</a>
-        <a href="/projects" class="hover:underline">Projects</a>
-        <a href="/about" class="hover:underline">About</a>
+        <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog" 
+          hx-swap="innerHTML transition:true" class="hover:underline">Blog</a>
+        <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
+          hx-swap="innerHTML transition:true" class="hover:underline">Projects</a>
+        <a href="/about" hx-get="/about" hx-target="#response-content" hx-trigger="click" hx-push-url="/about"
+          hx-swap="innerHTML transition:true" class="hover:underline">About</a>
       </nav>
     </header>
-    <div class="container mx-auto max-w-4xl p-4"> 
+    <div class="container mx-auto max-w-4xl p-4" id ="response-content"> 
         @RenderBody()
     </div>
 
     <footer class="container mx-auto mb-1 max-w-4xl pt-12">
 
       <div class="bg-[#233038] p-6 text-white">
-      &copy; <span id="year"></span> Matthew Gwalisam.All rights reserved.<br>
+      &copy; <span id="year"></span> Matthew Gwalisam. All rights reserved.<br>
       <span class="text-sm">Built with Swytch X Tailwindcss X HTMX </span><br>
      <span class = "text-sm hover:text-[#075056]">source code: <a href="https://github.com/Gwali-1/Site">https://github.com/Gwali-1/Site</a></span>
       </div>
     </footer>
     <script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-</script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
 
   </body>
 </html>

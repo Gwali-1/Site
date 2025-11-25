@@ -2,7 +2,6 @@
           Layout = "Layout.cshtml";
       }
 
-
       @model Site.Models.HomeDataContext
 
 
@@ -17,10 +16,19 @@
             </div>
             <p class="text-gray-500 hover:text-gray-700 transition-colors duration-200 mt-0">Programmer</p>
             <p class="pt-4 font-normal">
-              Welcome to my site, I’m Gwalisam.You can check out 
-              <a href="/projects" class="inline-block bg-[#075056] text-white px-1  rounded text-sm hover:opacity-75 transition-opacity duration-200">Projects</a> I’ve been working on, read stuff I’ve
-              <a href="/blog" class="inline-block bg-[#075056] text-white px-1  rounded text-sm hover:opacity-75 transition-opacity duration-200">written</a>, or learn more about me
-              <a href="/about" class="inline-block bg-[#075056] text-white px-1  rounded text-sm hover:opacity-75 transition-opacity duration-200">here</a>.
+              Hello,I’m Gwalisam and welocome to my site.You can check out 
+              <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
+              hx-swap="innerHTML transition:true" class="inline-block bg-[#075056] text-white px-1  rounded text-sm hover:opacity-75 transition-opacity duration-200">
+                Projects
+              </a> I’ve been working on, read stuff I’ve
+
+              <a href="/blog" hx-get="/about" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog"
+              hx-swap="innerHTML transition:true"  class="inline-block bg-[#075056] text-white px-1  rounded text-sm hover:opacity-75 transition-opacity duration-200">
+               written</a>, or learn more about me
+
+              <a href="/about"  hx-get="/about" hx-target="#response-content" hx-trigger="click" hx-push-url="/about"
+              hx-swap="innerHTML transition:true"  class="inline-block bg-[#075056] text-white px-1  rounded text-sm hover:opacity-75 transition-opacity duration-200">
+               here</a>.
             </p>
             <div class="flex gap-4 mt-2 p-2">
               <a href="https://github.com/your-github" target="_blank" class="hover:opacity-75 transition-opacity duration-200">
@@ -42,7 +50,8 @@
             @foreach (var blog in @Model.Blogs)
             {
             <li class="w-full md:w-2/3">
-              <a href="/post/@blog.Slug  " class="flex justify-between items-center hover:underline">
+              <a href="/post/@blog.Slug" hx-get="/post/@blog.Slug" hx-target="#response-content" hx-trigger="click"  hx-push-url="/post/@blog.Slug"
+                hx-swap="innerHTML transition:true" class="flex justify-between items-center hover:underline">
                 <span>@blog.Title</span>
                 <span class="text-gray-500 text-sm">@blog.Date</span>
               </a>
@@ -51,7 +60,8 @@
           </ul>
         </div>
         <div class="pt-3 ">
-          <a href="/blog" class="font-normal text-small text-[#075056] hover:underline">View all posts</a>
+          <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog" 
+          hx-swap="innerHTML transition:true" class="font-normal text-small text-[#075056] hover:underline">View all posts</a>
         </div>
 
         <div class="container mt-12">
