@@ -4,6 +4,7 @@
 using System.Net;
 using System.Text.Json;
 using Markdig;
+using Markdig.Extensions.AutoIdentifiers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -58,7 +59,10 @@ var config = new ConfigurationBuilder()
 var secret = config.GetValue<string>("Secret");
 
 //Markdig
-var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+var pipeline = new MarkdownPipelineBuilder()
+    .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
+    .UseAdvancedExtensions()
+    .Build();
 
 //Routes and action registration
 swytchApp.AddAction(
@@ -88,6 +92,7 @@ swytchApp.AddAction(
     "/blog",
     async (context) =>
     {
+        Console.WriteLine(context.Request.Headers["HX-Request"]);
         using var scope = serviceProvider.CreateScope();
 
         var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
