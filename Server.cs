@@ -85,8 +85,18 @@ swytchApp.AddAction(
         var e = await swytchApp.GenerateTemplate("Home", dataContext);
         Console.WriteLine(e);
 
-        //TODO:: check if HX-Request header is present and send generated content , if not render
-        await swytchApp.RenderTemplate<object>(context, "Home", dataContext);
+        var htmxHeader = context.Request.Headers["HX-Request"];
+        if (string.IsNullOrEmpty(htmxHeader))
+        {
+            await swytchApp.RenderTemplate<object>(context, "Home", dataContext);
+            return;
+        }
+
+        var homeContent = await swytchApp.GenerateTemplate<HomeDataContext>(
+            "HomeFragment",
+            dataContext
+        );
+        await context.WriteTextToStream(homeContent, HttpStatusCode.OK);
     }
 );
 swytchApp.AddAction(
@@ -99,12 +109,18 @@ swytchApp.AddAction(
         var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
         var allBlogs = await blogPostService.GetBlogPostsAsync();
 
+        var htmxHeader = context.Request.Headers["HX-Request"];
+        if (string.IsNullOrEmpty(htmxHeader))
+        {
+            await swytchApp.RenderTemplate<object>(context, "Blog", allBlogs);
+            return;
+        }
+
         var allBlogsContent = await swytchApp.GenerateTemplate<IReadOnlyList<BlogPost>>(
-            "Blog",
+            "BlogFragment",
             allBlogs
         );
 
-        //TODO: check if HX-Request header is present and send generated content , if not render
         await context.WriteTextToStream(allBlogsContent, HttpStatusCode.OK);
     }
 );
@@ -124,9 +140,14 @@ swytchApp.AddAction(
         var mkdToHtml = Markdown.ToHtml(blogPost.Content, pipeline);
         blogPost.Content = mkdToHtml;
 
-        var blogPostView = await swytchApp.GenerateTemplate<BlogPost>("BlogView", blogPost);
+        var htmxHeader = context.Request.Headers["HX-Request"];
+        if (string.IsNullOrEmpty(htmxHeader))
+        {
+            await swytchApp.RenderTemplate<object>(context, "BlogView", blogPost);
+            return;
+        }
 
-        //TODO: check if HX-Request header is present and send generated content , if not render
+        var blogPostView = await swytchApp.GenerateTemplate<BlogPost>("BlogViewFragment", blogPost);
         await context.WriteTextToStream(blogPostView, HttpStatusCode.OK);
     }
 );
@@ -141,8 +162,17 @@ swytchApp.AddAction(
         var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
         var allProjects = await projectsService.GetProjectsAsync();
 
-        //TODO: check if HX-Request header is present and send generated content , if not render
-        await swytchApp.RenderTemplate<object>(context, "Projects", allProjects);
+        var htmxHeader = context.Request.Headers["HX-Request"];
+        if (string.IsNullOrEmpty(htmxHeader))
+        {
+            await swytchApp.RenderTemplate<object>(context, "Projects", allProjects);
+            return;
+        }
+        var projectsView = await swytchApp.GenerateTemplate<IReadOnlyList<Project>>(
+            "ProjectsFragment",
+            allProjects
+        );
+        await context.WriteTextToStream(projectsView, HttpStatusCode.OK);
     }
 );
 
@@ -151,8 +181,14 @@ swytchApp.AddAction(
     "/about",
     async (context) =>
     {
-        //TODO: check if HX-Request header is present and send generated content , if not render
-        await swytchApp.RenderTemplate<object>(context, "About", null);
+        var htmxHeader = context.Request.Headers["HX-Request"];
+        if (string.IsNullOrEmpty(htmxHeader))
+        {
+            await swytchApp.RenderTemplate<object>(context, "About", null);
+            return;
+        }
+        var AboutView = await swytchApp.GenerateTemplate<object>("AboutFragment", null!);
+        await context.WriteTextToStream(AboutView, HttpStatusCode.OK);
     }
 );
 

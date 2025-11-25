@@ -18,7 +18,8 @@
   <body class="bg-[#D3DBDD] font-[Asap]">
     <header class=" container mx-auto  font-[noto] max-w-4xl p-4">
       <nav class="hover-link flex items-center gap-3 pt-8 text-xl font-bold">
-        <a href="/" class="hover:underline" >Home</a>
+        <a href="/" hx-get="/" hx-target="#response-content" hx-trigger="click" hx-push-url="/" 
+          hx-swap="innerHTML transition:true" class="hover:underline" >Home</a>
         <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog" 
           hx-swap="innerHTML transition:true" class="hover:underline">Blog</a>
         <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
