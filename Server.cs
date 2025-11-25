@@ -90,64 +90,12 @@ swytchApp.AddAction(
     "/blog",
     async (context) =>
     {
-        //TODO fetch correct data and return
-        //
-
         using var scope = serviceProvider.CreateScope();
-        var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
-        var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
 
+        var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
         var allBlogs = await blogPostService.GetBlogPostsAsync();
 
         await swytchApp.RenderTemplate<object>(context, "Blog", allBlogs);
-    }
-);
-
-swytchApp.AddAction(
-    "GET",
-    "/projects",
-    async (context) =>
-    {
-        //TODO fetch correct data and return
-        //
-
-        using var scope = serviceProvider.CreateScope();
-        var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
-        var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
-
-        var allProjects = await projectsService.GetProjectsAsync();
-
-        await swytchApp.RenderTemplate<object>(context, "Projects", allProjects);
-    }
-);
-
-swytchApp.AddAction(
-    "GET",
-    "/about",
-    async (context) =>
-    {
-        //TODO fetch correct data and return
-
-        using var scope = serviceProvider.CreateScope();
-        var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
-        var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
-
-        await swytchApp.RenderTemplate<object>(context, "About", null);
-    }
-);
-
-swytchApp.AddAction(
-    "GET",
-    "/posts",
-    async (context) =>
-    {
-        logger.LogInformation("blog posts request");
-
-        using var scope = serviceProvider.CreateScope();
-        var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
-
-        var posts = await blogPostService.GetBlogPostsAsync();
-        await context.ToOk(posts);
     }
 );
 
@@ -167,6 +115,44 @@ swytchApp.AddAction(
         blogPost.Content = mkdToHtml;
 
         await swytchApp.RenderTemplate<object>(context, "BlogView", blogPost);
+    }
+);
+
+swytchApp.AddAction(
+    "GET",
+    "/projects",
+    async (context) =>
+    {
+        using var scope = serviceProvider.CreateScope();
+
+        var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
+        var allProjects = await projectsService.GetProjectsAsync();
+
+        await swytchApp.RenderTemplate<object>(context, "Projects", allProjects);
+    }
+);
+
+swytchApp.AddAction(
+    "GET",
+    "/about",
+    async (context) =>
+    {
+        await swytchApp.RenderTemplate<object>(context, "About", null);
+    }
+);
+
+swytchApp.AddAction(
+    "GET",
+    "/posts",
+    async (context) =>
+    {
+        logger.LogInformation("blog posts request");
+
+        using var scope = serviceProvider.CreateScope();
+        var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+
+        var posts = await blogPostService.GetBlogPostsAsync();
+        await context.ToOk(posts);
     }
 );
 

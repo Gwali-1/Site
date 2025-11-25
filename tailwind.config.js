@@ -11,8 +11,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        iosevka: ['Iosevka', 'sans-serif'],
+        noto: ['Noto Sans Mono', 'sans-serif'],
         Inter: ['Inter', 'ui-sans-serif', 'system-ui']
+        Asap: ['Asap']
       },
     },
   },
