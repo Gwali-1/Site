@@ -82,9 +82,6 @@ swytchApp.AddAction(
 
         var dataContext = new HomeDataContext { Blogs = blogs, Projects = projects };
 
-        var e = await swytchApp.GenerateTemplate("Home", dataContext);
-        Console.WriteLine(e);
-
         var htmxHeader = context.Request.Headers["HX-Request"];
         if (string.IsNullOrEmpty(htmxHeader))
         {

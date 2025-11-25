@@ -397,8 +397,23 @@
   .font-\[Asap\] {
     font-family: Asap;
   }
+  .font-\[Gothic\] {
+    font-family: Gothic;
+  }
+  .font-\[asap\] {
+    font-family: asap;
+  }
+  .font-\[bebas\] {
+    font-family: bebas;
+  }
+  .font-\[gothic\] {
+    font-family: gothic;
+  }
   .font-\[noto\] {
     font-family: noto;
+  }
+  .font-\[nunito\] {
+    font-family: nunito;
   }
   .text-4xl {
     font-size: var(--text-4xl);

@@ -12,8 +12,10 @@ module.exports = {
       },
       fontFamily: {
         noto: ['Noto Sans Mono', 'sans-serif'],
-        Inter: ['Inter', 'ui-sans-serif', 'system-ui']
-        Asap: ['Asap']
+        Inter: ['Inter', 'ui-sans-serif', 'system-ui'],
+        asap: ['Asap'],
+        bebas: ['Bebas Neue'],
+        nunito: ['Nunito']
       },
     },
   },
