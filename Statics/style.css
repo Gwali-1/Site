@@ -398,16 +398,19 @@
     font-family: Asap;
   }
   .font-\[Gothic\] {
-    font-family: Gothic;
+    font-family: 'League Gothic';
   }
   .font-\[asap\] {
     font-family: asap;
   }
   .font-\[bebas\] {
-    font-family: bebas;
+    font-family: 'Bebas Neue';
   }
-  .font-\[gothic\] {
-    font-family: gothic;
+  .font-\[inter\] {
+    font-family: inter;
+  }
+  .font-\[marker\] {
+    font-family: 'Permanent Marker';
   }
   .font-\[noto\] {
     font-family: noto;

@@ -15,6 +15,8 @@ module.exports = {
         Inter: ['Inter', 'ui-sans-serif', 'system-ui'],
         asap: ['Asap'],
         bebas: ['Bebas Neue'],
+        gothic: ['League Gothic'],
+        marker: ['Permanent Marker'],
         nunito: ['Nunito']
       },
     },
