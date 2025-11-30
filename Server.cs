@@ -127,8 +127,6 @@ swytchApp.AddAction(
     "/post/{slug}",
     async (context) =>
     {
-        logger.LogInformation("Blog Post Request");
-
         using var scope = serviceProvider.CreateScope();
         var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
 

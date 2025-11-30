@@ -5,17 +5,17 @@
       @model Site.Models.HomeDataContext
 
 
-      <div class="pt-12 pb-12 " >
+      <div class="pt-12 pb-12 font-extrabold sm:font-normal" >
 
         <div class="container flex flex-col  gap-12 ">
 
           <div class="md:w-3/4 w-full  ">
             <div class="flex items-center gap-2">
-              <h2 class="text-xl font-bold  font-[bebas] mb-0 text[#233038]">Matthew Gwalisam</h2>
+              <h2 class="text-xl font-bold  font-['Bebas_Neue'] mb-0 text[#233038]">Matthew Gwalisam</h2>
               <img src="/swytchserver/static/flag.svg" class="w-6 h-6" alt="Ghana flag">
             </div>
             <p class="text-gray-500 hover:text-gray-700 transition-colors duration-200 mt-0">Programmer</p>
-            <p class="pt-4 font-normal">
+            <p class="pt-4 ">
               Hello, I’m Gwalisam, a programmer from Ghana. Welcome to my site! You can check out 
               <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
               hx-swap="innerHTML transition:true" class="inline-block bg-[#075056] text-white px-1  rounded text-sm hover:opacity-75 transition-opacity duration-200">
@@ -44,7 +44,7 @@
       
 
         <div class="container mt-12">
-          <h2 class="text-sm font-bold font-[marker] ">Recent Blogs</h2>
+          <h2 class="text-sm font-bold font-['Permanent_Marker'] ">Recent Blogs</h2>
           <ul class="flex flex-col gap-2 pt-5">
 
             @foreach (var blog in @Model.Blogs)
@@ -65,7 +65,7 @@
         </div>
 
         <div class="container mt-12">
-          <h2 class="text-sm font-bold font-[marker] mb-6 ">Featured Projects</h2>
+          <h2 class="text-sm font-bold font-['Permanent_Marker'] mb-6 ">Featured Projects</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
             @foreach(var project in @Model.Projects )

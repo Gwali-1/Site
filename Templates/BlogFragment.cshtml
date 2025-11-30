@@ -1,7 +1,7 @@
 
 @model IReadOnlyList<Site.Models.BlogPost>
 
-<div class="pt-12 flex flex-col">
+<div class="pt-12 flex flex-col font-extrabold sm:font-normal">
 
     <div class="flex items-center gap-2">
     <h2 class="text-xl font-bold font-[noto] mb-0 text[#233038]">@Model.Count Posts</h2>
@@ -24,7 +24,7 @@
           <li class="w-full md:w-2/3">
             <a href="/post/@blog.Slug"  hx-get="/post/@blog.Slug" hx-target="#response-content" hx-trigger="click"  hx-push-url="/post/@blog.Slug"
                 hx-swap="innerHTML transition:true" class="flex justify-between items-center hover:underline">
-              <span class="font-medium">@blog.Title</span>
+              <span class="">@blog.Title</span>
               <span class="text-gray-500 text-sm">@blog.Date</span>
             </a>
           </li>

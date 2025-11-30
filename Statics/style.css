@@ -7,7 +7,6 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
-    --color-red-300: oklch(80.8% 0.114 19.571);
     --color-gray-200: oklch(92.8% 0.006 264.531);
     --color-gray-300: oklch(87.2% 0.01 258.338);
     --color-gray-500: oklch(55.1% 0.027 264.364);
@@ -26,6 +25,7 @@
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
     --radius-md: 0.375rem;
     --radius-lg: 0.5rem;
     --default-transition-duration: 150ms;
@@ -394,29 +394,32 @@
   .pb-12 {
     padding-bottom: calc(var(--spacing) * 12);
   }
-  .font-\[Asap\] {
-    font-family: Asap;
+  .font-\[\'Bebas_Neue\'\] {
+    font-family: 'Bebas Neue';
   }
-  .font-\[Gothic\] {
-    font-family: 'League Gothic';
+  .font-\[\'Permanent_Marker\'\] {
+    font-family: 'Permanent Marker';
   }
-  .font-\[asap\] {
-    font-family: asap;
+  .font-\[\'Roboto\'\] {
+    font-family: 'Roboto';
+  }
+  .font-\[Roboto\] {
+    font-family: Roboto;
   }
   .font-\[bebas\] {
-    font-family: 'Bebas Neue';
+    font-family: bebas;
   }
   .font-\[inter\] {
     font-family: inter;
   }
   .font-\[marker\] {
-    font-family: 'Permanent Marker';
+    font-family: marker;
   }
   .font-\[noto\] {
     font-family: noto;
   }
-  .font-\[nunito\] {
-    font-family: nunito;
+  .font-\[roboto\] {
+    font-family: roboto;
   }
   .text-4xl {
     font-size: var(--text-4xl);
@@ -433,6 +436,10 @@
   .font-bold {
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
+  }
+  .font-extrabold {
+    --tw-font-weight: var(--font-weight-extrabold);
+    font-weight: var(--font-weight-extrabold);
   }
   .font-medium {
     --tw-font-weight: var(--font-weight-medium);
@@ -517,6 +524,12 @@
       @media (hover: hover) {
         opacity: 75%;
       }
+    }
+  }
+  .sm\:font-normal {
+    @media (width >= 40rem) {
+      --tw-font-weight: var(--font-weight-normal);
+      font-weight: var(--font-weight-normal);
     }
   }
   .md\:block {

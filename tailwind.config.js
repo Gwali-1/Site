@@ -12,11 +12,11 @@ module.exports = {
       },
       fontFamily: {
         noto: ['Noto Sans Mono', 'sans-serif'],
-        Inter: ['Inter', 'ui-sans-serif', 'system-ui'],
         asap: ['Asap'],
-        bebas: ['Bebas Neue'],
         gothic: ['League Gothic'],
-        marker: ['Permanent Marker'],
+        marker: ['"Permanent Marker"', 'cursive'],
+        inter: ['Inter'],
+        robot: ['Roboto'],
         nunito: ['Nunito']
       },
     },
