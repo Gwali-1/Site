@@ -132,9 +132,6 @@ swytchApp.AddAction(
 
         var blogPost = await blogPostService.GetBlogPostAsync(context.PathParams["slug"]);
 
-        var mkdToHtml = Markdown.ToHtml(blogPost.Content, pipeline);
-        blogPost.Content = mkdToHtml;
-
         var htmxHeader = context.Request.Headers["HX-Request"];
         if (string.IsNullOrEmpty(htmxHeader))
         {

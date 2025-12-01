@@ -1,11 +1,12 @@
-
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Flurl.Http;
+using Markdig;
+using Markdig.Extensions.AutoIdentifiers;
 using Microsoft.Extensions.Logging;
 using Site.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-using Flurl.Http;
 
 namespace Site.Services
 {
@@ -16,17 +17,33 @@ namespace Site.Services
         private readonly IProjectsService _projectsService;
         private const string Owner = "Gwali-1";
         private const string Repo = "Blog-Files";
+        private MarkdownPipeline pipeline;
 
-        public RepoEventService(ILogger<RepoEventService> logger, IBlogPostService blogPostService, IProjectsService projectsService)
+        //Markdig
+
+        public RepoEventService(
+            ILogger<RepoEventService> logger,
+            IBlogPostService blogPostService,
+            IProjectsService projectsService
+        )
         {
             _logger = logger;
             _blogPostService = blogPostService;
             _projectsService = projectsService;
+
+            pipeline = new MarkdownPipelineBuilder()
+                .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
+                .UseAdvancedExtensions()
+                .Build();
         }
 
         public async Task HandleAddedBlogAsync(string filePath, string branch)
         {
-            _logger.LogInformation("Handling added file: {FilePath} in branch: {Branch}", filePath, branch);
+            _logger.LogInformation(
+                "Handling added file: {FilePath} in branch: {Branch}",
+                filePath,
+                branch
+            );
             try
             {
                 //get content
@@ -50,7 +67,11 @@ namespace Site.Services
 
         public async Task HandleModifiedBlogAsync(string filePath, string branch)
         {
-            _logger.LogInformation("Handling modified file: {FilePath} in branch: {Branch}", filePath, branch);
+            _logger.LogInformation(
+                "Handling modified file: {FilePath} in branch: {Branch}",
+                filePath,
+                branch
+            );
             try
             {
                 //get content
@@ -74,7 +95,11 @@ namespace Site.Services
 
         public async Task HandleAddedProjectAsync(string filePath, string branch)
         {
-            _logger.LogInformation("Handling added project: {FilePath} in branch: {Branch}", filePath, branch);
+            _logger.LogInformation(
+                "Handling added project: {FilePath} in branch: {Branch}",
+                filePath,
+                branch
+            );
             try
             {
                 var stringContent = await GetFileContentFromGithub(filePath, branch);
@@ -103,7 +128,11 @@ namespace Site.Services
 
         public async Task HandleModifiedProjectAsync(string filePath, string branch)
         {
-            _logger.LogInformation("Handling modified project: {FilePath} in branch: {Branch}", filePath, branch);
+            _logger.LogInformation(
+                "Handling modified project: {FilePath} in branch: {Branch}",
+                filePath,
+                branch
+            );
             try
             {
                 var stringContent = await GetFileContentFromGithub(filePath, branch);
@@ -130,10 +159,6 @@ namespace Site.Services
             }
         }
 
-
-
-
-
         private async Task<string> GetFileContentFromGithub(string filePath, string branch)
         {
             var rawUrl = $"https://raw.githubusercontent.com/{Owner}/{Repo}/{branch}/{filePath}";
@@ -141,20 +166,23 @@ namespace Site.Services
             var fileContent = await rawUrl.GetStringAsync();
 
             return fileContent;
-
         }
 
         private BlogPost ParseFrontMatter(string fileContent)
         {
-            var match = Regex.Match(fileContent, @"^---\s*\n(.*?)\n---\s*\n(.*)", RegexOptions.Singleline);
+            var match = Regex.Match(
+                fileContent,
+                @"^\s*---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n([\s\S]*)$",
+                RegexOptions.Singleline
+            );
             if (match.Success)
             {
                 var frontMatter = match.Groups[1].Value;
                 var markdownBody = match.Groups[2].Value;
-
+                markdownBody = Markdown.ToHtml(markdownBody, pipeline);
 
                 var deserializer = new DeserializerBuilder()
-                   .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
                     .Build();
 
                 var metaData = deserializer.Deserialize<MetaData>(frontMatter);
@@ -165,20 +193,21 @@ namespace Site.Services
                     Content = markdownBody,
                     Title = metaData.Title,
                     Date = metaData.Date,
-                    Slug = metaData.Slug
+                    Slug = metaData.Slug,
                 };
 
                 return newBlogPost;
-
             }
             throw new Exception("Could not parse front matter");
         }
 
         private Project ParseProjectFile(string fileContent)
         {
-            var project = JsonSerializer.Deserialize<Project>(fileContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var project = JsonSerializer.Deserialize<Project>(
+                fileContent,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
             return project ?? new Project();
         }
-
     }
 }
