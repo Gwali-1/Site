@@ -279,7 +279,8 @@ swytchApp.AddAction(
 
 //create tables
 DatabaseHelper.CreateTablesIfNotExist(swytchApp);
-DatabaseHelper.InsertSampleTestDataInDatabase(swytchApp);
+
+// DatabaseHelper.InsertSampleTestDataInDatabase(swytchApp);
 
 //Start app
 await swytchApp.Listen("http://+:8080/");

@@ -14,7 +14,7 @@ namespace Site.Services
         private readonly IBlogPostService _blogPostService;
         private readonly IProjectsService _projectsService;
         private const string Owner = "Gwali-1";
-        private const string Repo = "Blog-Files";
+        private const string Repo = "SiteStore";
 
         public RepoEventService(
             ILogger<RepoEventService> logger,
