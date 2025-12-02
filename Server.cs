@@ -131,6 +131,7 @@ swytchApp.AddAction(
         var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
 
         var blogPost = await blogPostService.GetBlogPostAsync(context.PathParams["slug"]);
+        blogPost.Content = Markdown.ToHtml(blogPost.Content, pipeline);
 
         var htmxHeader = context.Request.Headers["HX-Request"];
         if (string.IsNullOrEmpty(htmxHeader))

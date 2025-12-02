@@ -1,8 +1,6 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Flurl.Http;
-using Markdig;
-using Markdig.Extensions.AutoIdentifiers;
 using Microsoft.Extensions.Logging;
 using Site.Models;
 using YamlDotNet.Serialization;
@@ -17,9 +15,6 @@ namespace Site.Services
         private readonly IProjectsService _projectsService;
         private const string Owner = "Gwali-1";
         private const string Repo = "Blog-Files";
-        private MarkdownPipeline pipeline;
-
-        //Markdig
 
         public RepoEventService(
             ILogger<RepoEventService> logger,
@@ -30,11 +25,6 @@ namespace Site.Services
             _logger = logger;
             _blogPostService = blogPostService;
             _projectsService = projectsService;
-
-            pipeline = new MarkdownPipelineBuilder()
-                .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
-                .UseAdvancedExtensions()
-                .Build();
         }
 
         public async Task HandleAddedBlogAsync(string filePath, string branch)
@@ -179,7 +169,6 @@ namespace Site.Services
             {
                 var frontMatter = match.Groups[1].Value;
                 var markdownBody = match.Groups[2].Value;
-                markdownBody = Markdown.ToHtml(markdownBody, pipeline);
 
                 var deserializer = new DeserializerBuilder()
                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
