@@ -92,11 +92,16 @@ public class BlogPostService : IBlogPostService
         try
         {
             using var dbcontext = _app.GetConnection(DatabaseProviders.SQLite);
-            string query = "UPDATE BlogPosts SET Content = @Content WHERE Slug = @Slug";
+            string query = "UPDATE BlogPosts SET Title = @Title, Tags = @Tags, Date = @Date, Slug = @Slug WHERE Slug = @Slug";
 
             var result = await dbcontext.ExecuteAsync(
                 query,
-                new { Content = blogPost.Content, Slug = blogPost.Slug }
+                new {
+                    Title = blogPost.Title,
+                    Tags = blogPost.Tags,
+                    Date = blogPost.Date,
+                    Slug = blogPost.Slug
+                }
             );
             return 1 == result;
         }
@@ -104,6 +109,82 @@ public class BlogPostService : IBlogPostService
         {
             _logger.LogError(e, "Exception occured when updating a blog post");
             return false;
+        }
+    }
+    
+     // Fetch blog post from disk using JSON frontmatter
+    public async Task<BlogPost> GetBlogPostFromDiskAsync(string slug)
+    {
+        // Directory where markdown posts are stored
+        string postsDir = Path.Combine(AppContext.BaseDirectory, "Posts");
+        // Prevent directory traversal
+        string safeSlug = slug.Replace("..", "").Replace("/", "").Replace("\\", "");
+        string filePath = Path.Combine(postsDir, safeSlug + ".md");
+        // Ensure file is within postsDir
+        if (!filePath.StartsWith(postsDir))
+        {
+            _logger.LogWarning($"Unsafe slug attempted: {slug}");
+            return new BlogPost();
+        }
+        if (!File.Exists(filePath))
+        {
+            _logger.LogWarning($"Blog post file not found: {filePath}");
+            return new BlogPost();
+        }
+        try
+        {
+            using var reader = new StreamReader(filePath);
+            string line;
+            string frontmatter = "";
+            bool inFrontmatter = false;
+            List<string> contentLines = new();
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (!inFrontmatter && line.Trim() == "---")
+                {
+                    inFrontmatter = true;
+                    continue;
+                }
+                if (inFrontmatter && line.Trim() == "---")
+                {
+                    inFrontmatter = false;
+                    continue;
+                }
+                if (inFrontmatter)
+                {
+                    frontmatter += line + "\n";
+                }
+                else
+                {
+                    contentLines.Add(line);
+                }
+            }
+            BlogPost blogPost = new BlogPost();
+            if (!string.IsNullOrWhiteSpace(frontmatter))
+            {
+                try
+                {
+                    var meta = System.Text.Json.JsonSerializer.Deserialize<MetaData>(frontmatter);
+                    if (meta != null)
+                    {
+                        blogPost.Title = meta.Title;
+                        blogPost.Tags = string.Join(",", meta.Tags);
+                        blogPost.Date = meta.Date;
+                        blogPost.Slug = meta.Slug;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Failed to parse JSON frontmatter for {slug}");
+                }
+            }
+            blogPost.Content = string.Join("\n", contentLines);
+            return blogPost;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error reading blog post file: {filePath}");
+            return new BlogPost();
         }
     }
 }

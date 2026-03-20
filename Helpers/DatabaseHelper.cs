@@ -1,4 +1,5 @@
 using System.Data;
+using Microsoft.Data;
 using Dapper;
 using Site.Models;
 using Swytch.App;
@@ -11,7 +12,7 @@ public static class DatabaseHelper
 
     public static void CreateTablesIfNotExist(ISwytchApp app)
     {
-        using IDbConnection dbConnection = app.GetConnection(DatabaseProviders.SQLite);
+        using var dbConnection = app.GetConnection(DatabaseProviders.SQLite);
         dbConnection.Open();
 
         // SQL script to create Playlist and Song tables

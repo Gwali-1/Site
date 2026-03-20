@@ -8,4 +8,6 @@ public interface IBlogPostService
     Task<BlogPost> GetBlogPostAsync(string slug);
     Task<bool> InsertBlogPostAsync(BlogPost blogPost);
     Task<bool> UpdateBlogPostAsync(BlogPost blogPost);
+    Task<BlogPost> GetBlogPostFromDiskAsync(string slug);
+
 }

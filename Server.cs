@@ -75,7 +75,7 @@ swytchApp.AddAction(
         var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
 
         var allBlogs = await blogPostService.GetBlogPostsAsync();
-        var blogs = allBlogs.Take(3).ToList(); //this is bad - should have filtered in db
+        var blogs = allBlogs.Take(3).ToList(); //this is bad - should have filtered in db but whatever
 
         var allProjects = await projectsService.GetProjectsAsync();
         var projects = allProjects.Take(3).ToList();
@@ -123,6 +123,72 @@ swytchApp.AddAction(
 );
 
 swytchApp.AddAction(
+    "POST",
+    "/add-blog-metadata",
+    async (context) =>
+    {
+        using var scope = serviceProvider.CreateScope();
+        var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+
+        // Read JSON body as MetaData
+        var meta = context.ReadJsonBody<MetaData>();
+        if (meta == null || string.IsNullOrWhiteSpace(meta.Slug))
+        {
+            await context.WriteTextToStream("Invalid metadata", HttpStatusCode.BadRequest);
+            return;
+        }
+
+        var blogPost = new BlogPost
+        {
+            Title = meta.Title,
+            Tags = string.Join(",", meta.Tags),
+            Date = meta.Date,
+            Slug = meta.Slug,
+            Content = string.Empty // Content is stored in markdown file
+        };
+
+        var result = await blogPostService.InsertBlogPostAsync(blogPost);
+        if (result)
+            await context.ToOk("Blog Added");
+        else
+            await context.WriteTextToStream("Failed to add blog metadata", HttpStatusCode.InternalServerError);
+    }
+);
+swytchApp.AddAction(
+    "POST",
+    "/update-blog-metadata",
+    async (context) =>
+    {
+        using var scope = serviceProvider.CreateScope();
+        var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
+
+        // Read JSON body as MetaData
+        var meta = context.ReadJsonBody<MetaData>();
+        if (meta == null || string.IsNullOrWhiteSpace(meta.Slug))
+        {
+            await context.ToInternalError("Failed To Add");
+            return;
+        }
+
+        var blogPost = new BlogPost
+        {
+            Title = meta.Title,
+            Tags = string.Join(",", meta.Tags),
+            Date = meta.Date,
+            Slug = meta.Slug,
+            Content = string.Empty // Content is stored in markdown file
+        };
+
+        var result = await blogPostService.UpdateBlogPostAsync(blogPost);
+        if (result)
+            await context.ToOk("Updated");
+        else
+            await context.ToInternalError("Update Failed");
+    }
+);
+
+
+swytchApp.AddAction(
     "GET",
     "/post/{slug}",
     async (context) =>
@@ -130,7 +196,14 @@ swytchApp.AddAction(
         using var scope = serviceProvider.CreateScope();
         var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
 
-        var blogPost = await blogPostService.GetBlogPostAsync(context.PathParams["slug"]);
+        var blogPost = await blogPostService.GetBlogPostFromDiskAsync(context.PathParams["slug"]);
+        // If blog post is empty, redirect to home
+        if (string.IsNullOrWhiteSpace(blogPost.Title) && string.IsNullOrWhiteSpace(blogPost.Content))
+        {
+            await context.ToRedirect("/");
+            return;
+        }
+
         blogPost.Content = Markdown.ToHtml(blogPost.Content, pipeline);
 
         var htmxHeader = context.Request.Headers["HX-Request"];
@@ -161,6 +234,7 @@ swytchApp.AddAction(
             await swytchApp.RenderTemplate<object>(context, "Projects", allProjects);
             return;
         }
+
         var projectsView = await swytchApp.GenerateTemplate<IReadOnlyList<Project>>(
             "ProjectsFragment",
             allProjects
@@ -180,6 +254,7 @@ swytchApp.AddAction(
             await swytchApp.RenderTemplate<object>(context, "About", null);
             return;
         }
+
         var AboutView = await swytchApp.GenerateTemplate<object>("AboutFragment", null!);
         await context.WriteTextToStream(AboutView, HttpStatusCode.OK);
     }
