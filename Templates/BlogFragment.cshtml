@@ -1,37 +1,32 @@
-
 @model IReadOnlyList<Site.Models.BlogPost>
 
-<div class="pt-12 flex flex-col font-extrabold sm:font-normal">
-
-    <div class="flex items-center gap-2">
-    <h2 class="text-xl font-bold font-[noto] mb-0 text[#233038]">@Model.Count Posts</h2>
-    <img src="/swytchserver/static/desk-lamp.svg" class="w-8 h-8" alt="lamp">
+<div class="pt-10 pb-12 antialiased">
+    <div class="flex items-center gap-3 mb-4">
+      <h1 class="text-3xl font-extrabold text-[#233038] tracking-tight">Writing</h1>
+      <img src="/swytchserver/static/desk-lamp.svg" class="w-8 h-8 opacity-80" alt="lamp">
     </div>
 
-  <div class="container pb-6 md:w-1/2 w-full mr-auto" >
-    <p class="text-sm text-gray-600">
-      It's not often that I write or have something worth sharing, but I've come to realize it is important 
-      to recognize and articulate your own thoughts. On this page , I share my opinions, life experiences and technical learnings. Sometimes raw ,
-      sometimes refined but always my opinion and my alone.
-    </p>
-  </div>
+    <div class="max-w-2xl mb-16">
+      <p class="text-lg text-gray-600 leading-relaxed">
+        Personal reflections, technical deep-dives, and occasional rants. 
+        Raw or refined, these are my thoughts on programming and life.
+      </p>
+    </div>
 
-    <div class="container pt-12 pb-10">
-      <ul class="flex flex-col gap-2 pt-5">
-
+    <div class="mt-12">
+      <ul class="flex flex-col gap-8">
         @foreach(var blog in @Model)
         {
-          <li class="w-full md:w-2/3">
-            <a href="/post/@blog.Slug"  hx-get="/post/@blog.Slug" hx-target="#response-content" hx-trigger="click"  hx-push-url="/post/@blog.Slug"
-                hx-swap="innerHTML transition:true" class="flex justify-between items-center hover:underline">
-              <span class="">@blog.Title</span>
-              <span class=" text-[#DB6B43] text-sm">@blog.Date</span>
+          <li class="group">
+            <a href="/post/@blog.Slug" hx-get="/post/@blog.Slug" hx-target="#response-content" hx-trigger="click" hx-push-url="/post/@blog.Slug"
+                hx-swap="innerHTML transition:true" class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+              <span class="text-xl font-bold text-gray-900 group-hover:text-[#075056] transition-colors">@blog.Title</span>
+              <span class="text-sm font-mono text-[#DB6B43]">@blog.Date</span>
             </a>
           </li>
         }
       </ul>
     </div>
-
 </div>
 
 

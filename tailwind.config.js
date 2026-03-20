@@ -11,13 +11,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        noto: ['Noto Sans Mono', 'sans-serif'],
-        asap: ['Asap'],
-        gothic: ['League Gothic'],
-        marker: ['"Permanent Marker"', 'cursive'],
-        inter: ['Inter'],
-        robot: ['Roboto'],
-        nunito: ['Nunito']
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['Montserrat', 'sans-serif'],
+        nav: ['Outfit', 'sans-serif'],
+        mono: ['"Noto Sans Mono"', 'monospace'],
       },
     },
   },

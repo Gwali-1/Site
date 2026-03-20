@@ -9,26 +9,20 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@@4"></script> -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 
   </head>
-  <body class="bg-[#D3DBDD] font-sans font-extrabold sm:font-normal">
-    <header class=" container mx-auto  font-['Permanent_Marker'] max-w-4xl p-4">
-      <nav class="hover-link flex items-center gap-3 pt-8 text-xl font-bold">
+  <body class="bg-[#D3DBDD] font-sans text-gray-900 antialiased">
+    <header class="container mx-auto max-w-4xl p-4">
+      <nav class="flex items-center gap-6 pt-8 text-lg font-nav font-semibold tracking-tight">
         <a href="/" hx-get="/" hx-target="#response-content" hx-trigger="click" hx-push-url="/" 
-          hx-swap="innerHTML transition:true" class="hover:underline" >Home</a>
+          hx-swap="innerHTML transition:true" class="hover:text-[#075056] transition-colors" >Home</a>
         <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog" 
-          hx-swap="innerHTML transition:true" class="hover:underline">Blog</a>
+          hx-swap="innerHTML transition:true" class="hover:text-[#075056] transition-colors">Blog</a>
         <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
-          hx-swap="innerHTML transition:true" class="hover:underline">Projects</a>
+          hx-swap="innerHTML transition:true" class="hover:text-[#075056] transition-colors">Projects</a>
         <a href="/about" hx-get="/about" hx-target="#response-content" hx-trigger="click" hx-push-url="/about"
-          hx-swap="innerHTML transition:true" class="hover:underline">About</a>
+          hx-swap="innerHTML transition:true" class="hover:text-[#075056] transition-colors">About</a>
       </nav>
     </header>
     <div class="container mx-auto max-w-4xl p-4" id ="response-content"> 

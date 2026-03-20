@@ -2,13 +2,11 @@
 // GitHub Repository:https://github.com/Gwali-1/Swytch.git
 
 using System.Net;
-using System.Text.Json;
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Site.Helpers;
 using Site.Models;
 using Site.Services;
 using Swytch.App;
@@ -37,8 +35,6 @@ ServiceCollection serviceContainer = new ServiceCollection();
 serviceContainer.AddSingleton<ISwytchApp>(swytchApp);
 serviceContainer.AddScoped<IBlogPostService, BlogPostService>();
 serviceContainer.AddScoped<IProjectsService, ProjectsService>();
-serviceContainer.AddScoped<IRepoEventService, RepoEventService>();
-serviceContainer.AddSingleton<IAuthenticationHelper, AuthenticationHelper>();
 
 serviceContainer.AddLogging(builder =>
 {
@@ -259,103 +255,6 @@ swytchApp.AddAction(
         await context.WriteTextToStream(AboutView, HttpStatusCode.OK);
     }
 );
-
-swytchApp.AddAction(
-    "POST",
-    "/repoevent",
-    async (context) =>
-    {
-        logger.LogInformation("Received a repo webhook event from github");
-
-        //authenticate the request is from github
-        logger.LogInformation("Authenticating the request");
-
-        var hashHeader = context.Request.Headers["X-Hub-Signature-256"];
-        if (string.IsNullOrEmpty(hashHeader))
-        {
-            logger.LogInformation(
-                "X-Hub-Signature-256 header is missing from request, ending process"
-            );
-            return;
-        }
-
-        if (string.IsNullOrEmpty(secret))
-        {
-            logger.LogInformation("Secret value from config is null or empty, ending processs");
-            return;
-        }
-
-        var requestBody = context.ReadJsonBody();
-
-        //compute hash
-        var authHelper = serviceProvider.GetRequiredService<IAuthenticationHelper>();
-        var computedHash = authHelper.GetHashofBody(secret, requestBody);
-
-        //compare the hashes
-        var headerHashSignature = authHelper.StringToByteArray(hashHeader.Split("=")[1]);
-        var isAuthenticatedRequest = authHelper.CompareHashes(headerHashSignature, computedHash);
-
-        if (!isAuthenticatedRequest)
-        {
-            logger.LogInformation(
-                "Webhook request not authenticated as request from github, ending process"
-            );
-            return;
-        }
-
-        logger.LogInformation("Event authenticated successfully, will proceed to handle");
-
-        //handle event
-        var eventBody = JsonSerializer.Deserialize<GitHubPushEvent>(requestBody);
-        if (eventBody?.Commits is null)
-        {
-            logger.LogInformation("Commits in repo event is null, ending process");
-            return;
-        }
-
-        using var scope = serviceProvider.CreateScope();
-        var repoService = scope.ServiceProvider.GetRequiredService<IRepoEventService>();
-
-        var commit = eventBody.Commits[0];
-        var added = commit.Added.Count == 0 ? null : commit.Added[0];
-        var modified = commit.Modified.Count == 0 ? null : commit.Modified[0];
-
-        //added post
-        if (added is not null && added.StartsWith("Posts/"))
-        {
-            logger.LogInformation("Adding new blog entry => {name}", added);
-            await repoService.HandleAddedBlogAsync(added, "main");
-        }
-
-        //modified post
-        if (modified is not null && modified.StartsWith("Posts/"))
-        {
-            logger.LogInformation("Updating content of existing blog entry => {name}", modified);
-            await repoService.HandleModifiedBlogAsync(modified, "main");
-        }
-
-        //added project
-        if (added is not null && added.StartsWith("Projects/"))
-        {
-            logger.LogInformation("Adding new  project entry entry => {name}", modified);
-            await repoService.HandleAddedProjectAsync(added, "main");
-        }
-
-        //modified project
-        if (modified is not null && modified.StartsWith("Projects/"))
-        {
-            logger.LogInformation("Updating details of existing project => {name}", modified);
-            await repoService.HandleModifiedProjectAsync(modified, "main");
-        }
-
-        logger.LogInformation("Done handling repo event hook from github");
-    }
-);
-
-//create tables
-DatabaseHelper.CreateTablesIfNotExist(swytchApp);
-
-// DatabaseHelper.InsertSampleTestDataInDatabase(swytchApp);
 
 //Start app
 await swytchApp.Listen("http://+:8080/");

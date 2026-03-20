@@ -1,42 +1,35 @@
-
 @{
     Layout = "Layout.cshtml";
 }
 @model List<Site.Models.Project>
 
-      
-<div class="pt-12 flex flex-col font-extrabold sm:font-normal">
-
-    <div class="flex items-center gap-2">
-    <h2 class="text-xl font-bold mb-0 font-[noto] text[#233038]">Projects</h2>
-    <img src="/swytchserver/static/pencil-sharpener.svg" class="w-8 h-8" alt="lamp">
+<div class="pt-16 pb-12 antialiased">
+    <div class="flex items-center gap-3 mb-4">
+      <h1 class="text-3xl font-extrabold text-[#233038] tracking-tight">Projects</h1>
+      <img src="/swytchserver/static/pencil-sharpener.svg" class="w-8 h-8 opacity-80" alt="lamp">
     </div>
 
-  <div class="container pb-6 md:w-1/2 w-full mr-auto" >
-    <p class="text-sm text-gray-600">
-      Stuff I have worked on or working on currently.
-    </p>
-  </div>
+    <div class="max-w-2xl mb-16">
+      <p class="text-lg text-gray-600 leading-relaxed">
+        A collection of tools, experiments, and applications I've built or am currently working on.
+      </p>
+    </div>
 
-  <div class="container pt-12 pb-10">
-    <ul class="flex flex-col gap-2 pt-5">
-
+    <div class="mt-12">
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-8">
         @foreach(var project in @Model)
         {
-          <li class="w-full hover:bg-gray-200 rounded-md">
-            <a href="@project.Url" class="items-center">
-            <div class="flex items-center gap-2">
-              <p class="font-bold">@project.Name</p>
-              <span class="text-gray-500 hover:text-gray-700 transition-colors duration-200 mt-0 ml-3">@project.Url</span>
-              <!-- <img src="/swytchserver/static/project.svg" class="w-8 h-8" alt="lamp"> -->
-            </div>
-              <p class="text-sm text-gray-600 mb-2">@project.Description</p>
+          <li class="group p-6 rounded-2xl border border-gray-300 bg-white/50 hover:bg-white hover:border-[#075056] transition-all duration-300 shadow-sm hover:shadow-md">
+            <a href="@project.Url" target="_blank" class="flex flex-col h-full">
+              <h2 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#075056] transition-colors">@project.Name</h2>
+              <p class="text-gray-600 leading-relaxed mb-6 flex-grow">@project.Description</p>
+              <div class="flex items-center gap-2 text-sm font-bold text-[#075056] uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+                <span>View Project</span>
+                <span>&rarr;</span>
+              </div>
             </a>
           </li>
-
         }
-    </ul>
-  </div>
-
+      </ul>
+    </div>
 </div>
-  
