@@ -3,16 +3,16 @@
 
 @{
     var currentPage = Model?.CurrentPage ?? "";
-    string GetClass(string page) => (currentPage == page) ? "text-[#075056]" : "text-gray-400";
+    string GetClass(string page) => (currentPage == page) ? "text-[#075056]!" : "text-gray-400!";
 }
 
 <nav id="main-nav" hx-swap-oob="true" class="flex items-center gap-6 pt-8 text-lg font-nav font-semibold tracking-tight">
     <a href="/" hx-get="/" hx-target="#response-content" hx-trigger="click" hx-push-url="/" 
-       hx-swap="innerHTML transition:true" class="@GetClass("home") hover:text-[#075056] transition-colors" >Home</a>
+       hx-swap="innerHTML transition:true" class="@GetClass("home") hover:text-[#075056]! transition-colors" >Home</a>
     <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog" 
-       hx-swap="innerHTML transition:true" class="@GetClass("blog") hover:text-[#075056] transition-colors">Blog</a>
+       hx-swap="innerHTML transition:true" class="@GetClass("blog") hover:text-[#075056]! transition-colors">Blog</a>
     <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
-       hx-swap="innerHTML transition:true" class="@GetClass("projects") hover:text-[#075056] transition-colors">Projects</a>
+       hx-swap="innerHTML transition:true" class="@GetClass("projects") hover:text-[#075056]! transition-colors">Projects</a>
 </nav>
 
 <div class="pt-5 pb-12 antialiased">
