@@ -13,8 +13,6 @@
        hx-swap="innerHTML transition:true" class="@GetClass("blog") hover:text-[#075056] transition-colors">Blog</a>
     <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
        hx-swap="innerHTML transition:true" class="@GetClass("projects") hover:text-[#075056] transition-colors">Projects</a>
-    <a href="/about" hx-get="/about" hx-target="#response-content" hx-trigger="click" hx-push-url="/about"
-       hx-swap="innerHTML transition:true" class="@GetClass("about") hover:text-[#075056] transition-colors">About</a>
 </nav>
 
 <div class="pt-5 pb-12 antialiased">
@@ -29,8 +27,8 @@
       @foreach (var project in @Model.Projects)
       {
         <li class="group">
-          <a href="@project.Url" target="_blank" class="h-full  hover:underline">
-            <h2 class="text-sm font-bold text-blue-500 group-hover:text-blue-600 p-0">@project.Name</h2>
+          <a href="@project.Url" target="_blank" class="h-full ">
+            <span class="text-sm font-bold text-blue-500 hover:underline  decoration-2 underline-offset-4 group-hover:text-blue-500 p-0">@project.Name</span>
           </a>
           <p class="text-sm font-semibold text-gray-600 leading-relaxed mb-6 flex-grow">@project.Description</p>
 
