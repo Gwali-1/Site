@@ -1,3 +1,4 @@
+@using Site.Models
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,23 +7,25 @@
     <title>Gwalisam</title>
     <link href="/swytchserver/static/style.css" rel="stylesheet">
     <script src="/swytchserver/static/htmx.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@@4"></script> -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-
   </head>
   <body class="bg-[#D3DBDD] font-sans text-gray-900 antialiased">
+    @{
+      var currentPage = (Model as BaseViewModel)?.CurrentPage ?? "";
+      string GetClass(string page) => (currentPage == page) ? "text-[#075056]" : "text-gray-200!";
+    }
     <header class="container mx-auto max-w-4xl p-4">
-      <nav class="flex items-center gap-6 pt-8 text-lg font-nav font-semibold tracking-tight">
+      <nav id="main-nav" class="flex items-center gap-6 pt-8 text-lg font-nav font-semibold tracking-tight">
         <a href="/" hx-get="/" hx-target="#response-content" hx-trigger="click" hx-push-url="/" 
-          hx-swap="innerHTML transition:true" class="hover:text-[#075056] transition-colors" >Home</a>
+          hx-swap="innerHTML transition:true" class="@GetClass("home") hover:text-[#075056] transition-colors" >Home</a>
         <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog" 
-          hx-swap="innerHTML transition:true" class="hover:text-[#075056] transition-colors">Blog</a>
+          hx-swap="innerHTML transition:true" class="@GetClass("blog") hover:text-[#075056] transition-colors">Blog</a>
         <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
-          hx-swap="innerHTML transition:true" class="hover:text-[#075056] transition-colors">Projects</a>
+          hx-swap="innerHTML transition:true" class="@GetClass("projects") hover:text-[#075056] transition-colors">Projects</a>
         <a href="/about" hx-get="/about" hx-target="#response-content" hx-trigger="click" hx-push-url="/about"
-          hx-swap="innerHTML transition:true" class="hover:text-[#075056] transition-colors">About</a>
+          hx-swap="innerHTML transition:true" class="@GetClass("about") hover:text-[#075056] transition-colors">About</a>
       </nav>
     </header>
     <div class="container mx-auto max-w-4xl p-4" id ="response-content"> 
@@ -30,7 +33,6 @@
     </div>
 
     <footer class="container mx-auto mb-1 max-w-4xl pt-12">
-
       <div class="bg-[#233038] p-6 text-white">
       &copy; <span id="year"></span> Matthew Gwalisam. All rights reserved.<br>
       <span class="text-sm">Built with Swytch X Tailwind CSS X HTMX </span><br>
@@ -40,6 +42,5 @@
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-
   </body>
 </html>

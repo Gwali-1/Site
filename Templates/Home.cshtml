@@ -1,77 +1,87 @@
-      @{
-          Layout = "Layout.cshtml";
-      }
+@{
+  Layout = "Layout.cshtml";
+}
 
-      @model Site.Models.HomeDataContext
+@model Site.Models.HomeDataContext
 
-<div class="pt-10 pb-12 antialiased">
+<div class="pt-5 pb-12 antialiased">
   <div class="flex flex-col gap-12 pb-10">
-    <div class="md:w-3/4 w-full">
+    <div class="md:w-3/4 w-full flex flex-col gap-4">
       <div class="flex items-center gap-3">
-        <h1 class="text-lg font-bold text-[#233038] tracking-tight">Matthew Gwalisam</h1>
-        <img src="/swytchserver/static/flag.svg" class="w-7 h-7" alt="Ghana flag">
+        <h1 class="text-sm font-bold text-[#233038] tracking-tight">Matthew Gwalisam</h1>
+        <img src="/swytchserver/static/flag.svg" class="w-7 h-5" alt="Ghana flag">
       </div>
-      <p class="text-sm text-gray-600 font-medium mt-1">Software Programmer</p>
-      
-      <p class="pt-6 text-gray-800 leading-relaxed text-sm font-semibold">
-        Hello, I’m Gwalisam. I'm a programmer from Ghana. Welcome to my site! 
-        You can check out 
+      <p class="text-sm text-gray-600 font-medium ">Software Programmer</p>
+
+      <p class="text-gray-800 leading-relaxed text-sm font-semibold" mb-2>
+        Hello, I’m Gwalisam. I'm a programmer from Ghana. Welcome to my site!
+        You can check out
         <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
-        hx-swap="innerHTML transition:true" class="font-semibold text-blue-500 underline decoration-2 underline-offset-4">
+           hx-swap="innerHTML transition:true"
+           class="font-semibold text-blue-500 underline decoration-2 underline-offset-4">
           projects
         </a> I’m working on, read things I
         <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog"
-        hx-swap="innerHTML transition:true"  class="font-semibold text-blue-500 underline decoration-2 underline-offset-4">
+           hx-swap="innerHTML transition:true"
+           class="font-semibold text-blue-500 underline decoration-2 underline-offset-4">
           write</a>, or learn more about me
         <a href="/about" hx-get="/about" hx-target="#response-content" hx-trigger="click" hx-push-url="/about"
-        hx-swap="innerHTML transition:true"  class="font-semibold text-blue-500 underline decoration-2 underline-offset-4">
+           hx-swap="innerHTML transition:true"
+           class="font-semibold text-blue-500 underline decoration-2 underline-offset-4">
           here</a>.
       </p>
 
-      <div class="flex gap-5 mt-8 items-center">
-        <a href="https://github.com/Gwali-1" target="_blank" class="hover:scale-110 transition-transform duration-200">
-          <img src="/swytchserver/static/github-mark.svg" class="w-6 h-6 opacity-80 hover:opacity-100" alt="GitHub">
+      <div class="flex flex-col gap-0 ">
+        <a href="https://github.com/Gwali-1" target="_blank"
+           class="font-semibold text-sm text-blue-500 hover:underline decoration-2 underline-offset-4">
+          https://github.com/Gwali-1
         </a>
-        <a href="https://twitter.com/Gwalisam1" target="_blank" class="hover:scale-110 transition-transform duration-200">
-          <img src="/swytchserver/static/twitter.svg" class="w-6 h-6 opacity-80 hover:opacity-100" alt="Twitter">
+        <a href="https://twitter.com/Gwalisam1" target="_blank"
+           class="font-semibold text-sm text-blue-500 hover:underline decoration-2 underline-offset-4">
+          https://twitter.com/Gwalisam
         </a>
       </div>
     </div>
   </div>
 
-  <div class="">
-    <h2 class="text-sm font-bold tracking-[0.2em] uppercase text-gray-500 mb-6">Recent Blogs</h2>
-    <ul class="flex flex-col gap-4">
+  <div class="pb-10">
+    <h2 class="text-sm font-bold tracking-[0.2em] text-gray-500 ">stuff I have written recently...</h2>
+    <ul class="flex flex-col gap-0 ">
       @foreach (var blog in @Model.Blogs)
       {
-      <li class="group">
-        <a href="/post/@blog.Slug" hx-get="/post/@blog.Slug" hx-target="#response-content" hx-trigger="click" hx-push-url="/post/@blog.Slug"
-          hx-swap="innerHTML transition:true" class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-          <span class="text-sm text-blue-500 underline group-hover:text-blue-500 ">@blog.Title</span>
-          <span class="text-sm text-[#DB6B43]">@blog.Date</span>
-        </a>
-      </li>
+        <li class="group">
+          <a href="/post/@blog.Slug" hx-get="/post/@blog.Slug" hx-target="#response-content" hx-trigger="click"
+             hx-push-url="/post/@blog.Slug"
+             hx-swap="innerHTML transition:true"
+             class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+            <span
+              class="text-sm text-blue-500 hover:underline  decoration-2 underline-offset-4 group-hover:text-blue-500 font-semibold ">@blog.Title</span>
+          </a>
+        </li>
       }
     </ul>
-    <div class="mt-8">
-      <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog" 
-      hx-swap="innerHTML transition:true" class="text-sm font-bold text-[#075056] hover:underline uppercase tracking-wider">View all posts &rarr;</a>
+    <div class="mt-4">
+      <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog"
+         hx-swap="innerHTML transition:true"
+         class="text-sm font-semibold text-gray-500 underline  tracking-wider">View all posts &rarr;</a>
     </div>
   </div>
 
-  <div class="mt-24">
-    <h2 class="text-xs font-bold tracking-[0.2em] uppercase text-gray-500 mb-8">Featured Projects</h2>
+
+  <div class="">
+    <h2 class="text-sm font-bold tracking-[0.2em] text-gray-500">I worked on these project...</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-      @foreach(var project in @Model.Projects)
+      @foreach (var project in @Model.Projects)
       {
-      <div class="group">
-        <div class="aspect-video rounded-xl overflow-hidden bg-gray-200 border border-gray-300 mb-4 group-hover:border-[#075056] transition-colors">
-          <img src="/swytchserver/static/project.svg" alt="@project.Name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        <div class="group">
+          <div
+            class="aspect-video rounded-xl overflow-hidden bg-[#D3DBDD] mb-4  transition-colors">
+            <img src="/swytchserver/static/project.svg" alt="@project.Name"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          </div>
+          <span h2 class="text-sm font-bold text-blue-500 group-hover:text-blue-600 p-0  hover:underline  decoration-2 underline-offset-4 ">@project.Name</span>
+          <p class="text-gray-600 leading-relaxed mb-4 text-sm">@project.Description</p>
         </div>
-        <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#075056] transition-colors">@project.Name</h3>
-        <p class="text-gray-600 leading-relaxed mb-4 text-sm">@project.Description</p>
-        <a href="@project.Url" class="text-sm font-bold text-[#075056] hover:underline uppercase tracking-tight">Learn More</a>
-      </div>
       }
     </div>
   </div>

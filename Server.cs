@@ -1,4 +1,4 @@
-﻿// This template file is auto-generated.
+// This template file is auto-generated.
 // GitHub Repository:https://github.com/Gwali-1/Swytch.git
 
 using System.Net;
@@ -76,7 +76,7 @@ swytchApp.AddAction(
         var allProjects = await projectsService.GetProjectsAsync();
         var projects = allProjects.Take(3).ToList();
 
-        var dataContext = new HomeDataContext { Blogs = blogs, Projects = projects };
+        var dataContext = new HomeDataContext { Blogs = blogs, Projects = projects, CurrentPage = "home" };
 
         var htmxHeader = context.Request.Headers["HX-Request"];
         if (string.IsNullOrEmpty(htmxHeader))
@@ -102,16 +102,18 @@ swytchApp.AddAction(
         var blogPostService = scope.ServiceProvider.GetRequiredService<IBlogPostService>();
         var allBlogs = await blogPostService.GetBlogPostsAsync();
 
+        var viewModel = new BlogViewModel { Blogs = allBlogs, CurrentPage = "blog" };
+
         var htmxHeader = context.Request.Headers["HX-Request"];
         if (string.IsNullOrEmpty(htmxHeader))
         {
-            await swytchApp.RenderTemplate<object>(context, "Blog", allBlogs);
+            await swytchApp.RenderTemplate<object>(context, "Blog", viewModel);
             return;
         }
 
-        var allBlogsContent = await swytchApp.GenerateTemplate<IReadOnlyList<BlogPost>>(
+        var allBlogsContent = await swytchApp.GenerateTemplate<BlogViewModel>(
             "BlogFragment",
-            allBlogs
+            viewModel
         );
 
         await context.WriteTextToStream(allBlogsContent, HttpStatusCode.OK);
@@ -185,6 +187,53 @@ swytchApp.AddAction(
 
 
 swytchApp.AddAction(
+    "POST",
+    "/add-project",
+    async (context) =>
+    {
+        using var scope = serviceProvider.CreateScope();
+        var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
+
+        var project = context.ReadJsonBody<Project>();
+        if (project == null || string.IsNullOrWhiteSpace(project.Name))
+        {
+            await context.WriteTextToStream("Invalid project data", HttpStatusCode.BadRequest);
+            return;
+        }
+
+        var result = await projectsService.InsertProjectAsync(project);
+        if (result)
+            await context.ToOk("Project Added");
+        else
+            await context.WriteTextToStream("Failed to add project", HttpStatusCode.InternalServerError);
+    }
+);
+
+swytchApp.AddAction(
+    "POST",
+    "/update-project",
+    async (context) =>
+    {
+        using var scope = serviceProvider.CreateScope();
+        var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
+
+        var project = context.ReadJsonBody<Project>();
+        if (project == null || string.IsNullOrWhiteSpace(project.Name))
+        {
+            await context.WriteTextToStream("Invalid project data", HttpStatusCode.BadRequest);
+            return;
+        }
+
+        var result = await projectsService.UpdateProjectAsync(project);
+        if (result)
+            await context.ToOk("Project Updated");
+        else
+            await context.ToInternalError("Update Failed");
+    }
+);
+
+
+swytchApp.AddAction(
     "GET",
     "/post/{slug}",
     async (context) =>
@@ -224,16 +273,18 @@ swytchApp.AddAction(
         var projectsService = scope.ServiceProvider.GetRequiredService<IProjectsService>();
         var allProjects = await projectsService.GetProjectsAsync();
 
+        var viewModel = new ProjectsViewModel { Projects = allProjects, CurrentPage = "projects" };
+
         var htmxHeader = context.Request.Headers["HX-Request"];
         if (string.IsNullOrEmpty(htmxHeader))
         {
-            await swytchApp.RenderTemplate<object>(context, "Projects", allProjects);
+            await swytchApp.RenderTemplate<object>(context, "Projects", viewModel);
             return;
         }
 
-        var projectsView = await swytchApp.GenerateTemplate<IReadOnlyList<Project>>(
+        var projectsView = await swytchApp.GenerateTemplate<ProjectsViewModel>(
             "ProjectsFragment",
-            allProjects
+            viewModel
         );
         await context.WriteTextToStream(projectsView, HttpStatusCode.OK);
     }
@@ -244,14 +295,16 @@ swytchApp.AddAction(
     "/about",
     async (context) =>
     {
+        var viewModel = new AboutViewModel { CurrentPage = "about" };
+
         var htmxHeader = context.Request.Headers["HX-Request"];
         if (string.IsNullOrEmpty(htmxHeader))
         {
-            await swytchApp.RenderTemplate<object>(context, "About", null);
+            await swytchApp.RenderTemplate<object>(context, "About", viewModel);
             return;
         }
 
-        var AboutView = await swytchApp.GenerateTemplate<object>("AboutFragment", null!);
+        var AboutView = await swytchApp.GenerateTemplate<AboutViewModel>("AboutFragment", viewModel);
         await context.WriteTextToStream(AboutView, HttpStatusCode.OK);
     }
 );

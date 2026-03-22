@@ -1,37 +1,28 @@
 @{
-    Layout = "Layout.cshtml";
+  Layout = "Layout.cshtml";
 }
+@using Site.Models
+@model BlogViewModel
 
-@model IReadOnlyList<Site.Models.BlogPost>
-
-<div class="pt-16 pb-12 antialiased">
-    <div class="flex items-center gap-3 mb-4">
-      <h1 class="text-3xl font-extrabold text-[#233038] tracking-tight">Writing</h1>
-      <img src="/swytchserver/static/desk-lamp.svg" class="w-8 h-8 opacity-80" alt="lamp">
-    </div>
-
+<div class="pt-5 pb-12 antialiased">
     <div class="max-w-2xl mb-16">
-      <p class="text-lg text-gray-600 leading-relaxed">
-        Personal reflections, technical deep-dives, and occasional rants. 
-        Raw or refined, these are my thoughts on programming and life.
+      <p class="text-sm font-semibold text-gray-600 leading-relaxed">
+        Writing about software engineering, productivity, and the things I learn along the way.
       </p>
     </div>
 
     <div class="mt-12">
       <ul class="flex flex-col gap-8">
-        @foreach(var blog in @Model)
+        @foreach(var blog in @Model.Blogs)
         {
           <li class="group">
-            <a href="/post/@blog.Slug" hx-get="/post/@blog.Slug" hx-target="#response-content" hx-trigger="click" hx-push-url="/post/@blog.Slug"
-                hx-swap="innerHTML transition:true" class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-              <span class="text-xl font-bold text-gray-900 group-hover:text-[#075056] transition-colors">@blog.Title</span>
-              <span class="text-sm font-mono text-[#DB6B43]">@blog.Date</span>
+            <a href="/post/@blog.Slug" hx-get="/post/@blog.Slug" hx-target="#response-content" hx-trigger="click" hx-push-url="/post/@blog.Slug" 
+              hx-swap="innerHTML transition:true" class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <span class="text-sm text-blue-500 hover:underline group-hover:text-blue-500 font-semibold ">@blog.Title</span>
+              <span class="text-sm text-gray-500 font-mono tabular-nums whitespace-nowrap">@blog.Date</span>
             </a>
           </li>
         }
       </ul>
     </div>
 </div>
-
-
-

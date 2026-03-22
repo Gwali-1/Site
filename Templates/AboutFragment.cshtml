@@ -1,37 +1,26 @@
+@using Site.Models
+@model AboutViewModel
 
-<div class=" pt-12 container flex flex-col md:flex-row gap-12 font-extrabold sm:font-normal">
+@{
+    var currentPage = Model?.CurrentPage ?? "";
+    string GetClass(string page) => (currentPage == page) ? "text-[#075056]" : "text-gray-400";
+}
 
-  <div class="md:w-1/2 w-full ">
-    <div class="flex items-center gap-2">
-      <h2 class="text-xl font-bold mb-0  font-['Bebas_Neue'] text[#233038]">Matthew Gwalisam</h2>
-      <img src="/swytchserver/static/flag.svg" class="w-6 h-6" alt="Flag">
-    </div>
-    <p class="text-gray-500 hover:text-gray-700 transition-colors duration-200 mt-0">Programmer</p>
-    <p class="pt-4 ">
-      Hello, I’m Gwalisam. I made this site to share my ideas, things I'm learning, and some projects I work on.<br> 
-      I'm an active learner, always doing deep dives into topics that facinate me.<br><br>
-      I am deeply interested in topics like operating systems, concurrency, network, programming language design, and developer tooling.
-      I basically enjoy exploring how things work at a fundamental level and building software tools.<br><br>
-     
-      Outside of computers, I love art and interior design.<br>
+<nav id="main-nav" hx-swap-oob="true" class="flex items-center gap-6 pt-8 text-lg font-nav font-semibold tracking-tight">
+    <a href="/" hx-get="/" hx-target="#response-content" hx-trigger="click" hx-push-url="/" 
+       hx-swap="innerHTML transition:true" class="@GetClass("home") hover:text-[#075056] transition-colors" >Home</a>
+    <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog" 
+       hx-swap="innerHTML transition:true" class="@GetClass("blog") hover:text-[#075056] transition-colors">Blog</a>
+    <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
+       hx-swap="innerHTML transition:true" class="@GetClass("projects") hover:text-[#075056] transition-colors">Projects</a>
+    <a href="/about" hx-get="/about" hx-target="#response-content" hx-trigger="click" hx-push-url="/about"
+       hx-swap="innerHTML transition:true" class="@GetClass("about") hover:text-[#075056] transition-colors">About</a>
+</nav>
 
-      You can find me on the socials linked below or email me <a href="mailto:gwalisammatthew2@gmail.com" class="inline-block bg-[#075056] text-white px-2 py-1 
-        rounded text-sm hover:opacity-75 transition-opacity duration-200">gwalisammatthew2@gmail.com</a>
+<div class="pt-5 pb-12 antialiased">
+  <div class="max-w-2xl mb-16">
+    <p class="text-sm font-semibold text-gray-600 leading-relaxed">
+      Learn more about me, my background, and what I'm currently focused on.
     </p>
-    <div class="flex gap-4 mt-2">
-      <a href="https://github.com/Gwali-1" target="_blank" class="hover:opacity-75 transition-opacity duration-200">
-        <img src="/swytchserver/static/github-mark.svg" class="w-6 h-6" alt="GitHub">
-      </a>
-      <a href="https://twitter.com/Gwalisam1" target="_blank" class="hover:opacity-75 transition-opacity duration-200">
-        <img src="/swytchserver/static/twitter.svg" class="w-6 h-6" alt="Twitter">
-      </a>
-    </div>
-  </div>
-
-  <div class="md:w1/2 hidden md:block ml-auto ">
-      <img src="/swytchserver/static/sideview.svg"  class="w-64  aspect-square object-cover" alt="">
   </div>
 </div>
-    
-
-
