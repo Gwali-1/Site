@@ -7,6 +7,7 @@ using Markdig.Extensions.AutoIdentifiers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Site.Helpers;
 using Site.Models;
 using Site.Services;
 using Swytch.App;
@@ -48,11 +49,6 @@ IServiceProvider serviceProvider = serviceContainer.BuildServiceProvider();
 //Retrieving registered service
 var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-//configuration
-var config = new ConfigurationBuilder()
-    .AddJsonFile("config.json", reloadOnChange: true, optional: false)
-    .Build();
-var secret = config.GetValue<string>("Secret");
 
 //Markdig
 var pipeline = new MarkdownPipelineBuilder()
@@ -92,6 +88,7 @@ swytchApp.AddAction(
         await context.WriteTextToStream(homeContent, HttpStatusCode.OK);
     }
 );
+
 swytchApp.AddAction(
     "GET",
     "/blog",
@@ -309,5 +306,7 @@ swytchApp.AddAction(
     }
 );
 
+
+DatabaseHelper.CreateTablesIfNotExist(swytchApp);
 //Start app
 await swytchApp.Listen("http://+:8080/");

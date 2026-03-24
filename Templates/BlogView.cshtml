@@ -38,14 +38,14 @@
 
   </head>
   <body class="bg-[#D3DBDD] font-sans font-extrabold sm:font-normal">
-    <header class=" container mx-auto  font-['Permanent_Marker'] max-w-4xl p-4">
-      <nav class="hover-link flex items-center gap-3 pt-8 text-xl font-bold">
+    <header class="container mx-auto max-w-4xl p-4">
+      <nav id="main-nav" class="flex items-center gap-6 pt-8 text-lg font-nav font-semibold tracking-tight">
         <a href="/" hx-get="/" hx-target="#response-content" hx-trigger="click" hx-push-url="/" 
-          hx-swap="innerHTML transition:true" class="hover:underline" >Home</a>
+          hx-swap="innerHTML transition:true" class="text-gray-400! hover:text-[#075056]! transition-colors" >Home</a>
         <a href="/blog" hx-get="/blog" hx-target="#response-content" hx-trigger="click" hx-push-url="/blog" 
-          hx-swap="innerHTML transition:true" class="hover:underline">Blog</a>
+          hx-swap="innerHTML transition:true" class="text-[#075056]! hover:text-[#075056]! transition-colors">Blog</a>
         <a href="/projects" hx-get="/projects" hx-target="#response-content" hx-trigger="click" hx-push-url="/projects"
-          hx-swap="innerHTML transition:true" class="hover:underline">Projects</a>
+          hx-swap="innerHTML transition:true" class="text-gray-400! hover:text-[#075056]! transition-colors">Projects</a>
       </nav>
     </header>
     <div class="container mx-auto max-w-4xl p-4" id ="response-content"> 

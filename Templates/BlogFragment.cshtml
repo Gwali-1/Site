@@ -28,9 +28,12 @@
         {
           <li class="group">
             <a href="/post/@blog.Slug" hx-get="/post/@blog.Slug" hx-target="#response-content" hx-trigger="click" hx-push-url="/post/@blog.Slug" 
-              hx-swap="innerHTML transition:true" class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+               hx-swap="innerHTML transition:true" class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
               <span class="text-sm text-blue-500 hover:underline group-hover:text-blue-500 font-semibold ">@blog.Title</span>
-              <span class="text-sm text-gray-500 font-mono tabular-nums whitespace-nowrap">@blog.Date</span>
+              <span class="text-sm font-semibold text-gray-500">
+                #@blog.Tags
+              </span>
+              <span class="text-sm text-gray-500 font-mono font-semibold tabular-nums whitespace-nowrap">@blog.Date</span>
             </a>
           </li>
         }
