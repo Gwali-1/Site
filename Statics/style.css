@@ -7,7 +7,6 @@
     --font-mono: "Noto Sans Mono", monospace;
     --color-blue-500: oklch(62.3% 0.214 259.815);
     --color-blue-600: oklch(54.6% 0.245 262.881);
-    --color-gray-200: oklch(92.8% 0.006 264.531);
     --color-gray-400: oklch(70.7% 0.022 261.325);
     --color-gray-500: oklch(55.1% 0.027 264.364);
     --color-gray-600: oklch(44.6% 0.03 256.802);
@@ -21,8 +20,16 @@
     --container-4xl: 56rem;
     --text-sm: 0.875rem;
     --text-sm--line-height: calc(1.25 / 0.875);
+    --text-base: 1rem;
+    --text-base--line-height: calc(1.5 / 1);
     --text-lg: 1.125rem;
     --text-lg--line-height: calc(1.75 / 1.125);
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: calc(2 / 1.5);
+    --text-3xl: 1.875rem;
+    --text-3xl--line-height: calc(2.25 / 1.875);
     --text-4xl: 2.25rem;
     --text-4xl--line-height: calc(2.5 / 2.25);
     --font-weight-medium: 500;
@@ -543,6 +550,46 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: var(--tracking-tight);
   color: var(--color-black);
 }
+.prose h1 {
+  margin-top: calc(var(--spacing) * 10);
+  margin-bottom: calc(var(--spacing) * 6);
+  font-size: var(--text-3xl);
+  line-height: var(--tw-leading, var(--text-3xl--line-height));
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+.prose h2 {
+  margin-top: calc(var(--spacing) * 8);
+  margin-bottom: calc(var(--spacing) * 4);
+  font-size: var(--text-2xl);
+  line-height: var(--tw-leading, var(--text-2xl--line-height));
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+.prose h3 {
+  margin-top: calc(var(--spacing) * 6);
+  margin-bottom: calc(var(--spacing) * 3);
+  font-size: var(--text-xl);
+  line-height: var(--tw-leading, var(--text-xl--line-height));
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+.prose h4 {
+  margin-top: calc(var(--spacing) * 4);
+  margin-bottom: calc(var(--spacing) * 2);
+  font-size: var(--text-lg);
+  line-height: var(--tw-leading, var(--text-lg--line-height));
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+.prose h5 {
+  margin-top: calc(var(--spacing) * 4);
+  margin-bottom: calc(var(--spacing) * 2);
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
 .prose {
   --tw-prose-links: var(--color-blue-500);
 }
@@ -571,6 +618,31 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-gray-700);
   font-style: italic;
 }
+.prose ul {
+  margin-block: calc(var(--spacing) * 4);
+  margin-left: calc(var(--spacing) * 5);
+  list-style-position: outside;
+  list-style-type: disc;
+  :where(& > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
+  }
+}
+.prose ol {
+  margin-block: calc(var(--spacing) * 4);
+  margin-left: calc(var(--spacing) * 5);
+  list-style-position: outside;
+  list-style-type: decimal;
+  :where(& > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
+  }
+}
+.prose li {
+  padding-left: calc(var(--spacing) * 1);
+}
 .prose :not(pre) > code {
   border-radius: 0.25rem;
   background-color: color-mix(in srgb, #000 5%, transparent);
@@ -579,7 +651,6 @@ h1, h2, h3, h4, h5, h6 {
   }
   padding-inline: calc(var(--spacing) * 1.5);
   padding-block: calc(var(--spacing) * 0.5);
-  font-family: var(--font-mono);
   font-size: 0.85em;
   color: #DB6B43;
   &::before {
@@ -592,6 +663,7 @@ h1, h2, h3, h4, h5, h6 {
     --tw-content: none;
     content: none;
   }
+  font-family: "Courier New", Courier, monospace;
 }
 .prose pre {
   margin-block: calc(var(--spacing) * 4);
@@ -612,10 +684,10 @@ h1, h2, h3, h4, h5, h6 {
 .prose pre code {
   background-color: transparent;
   padding: calc(var(--spacing) * 0);
-  font-family: var(--font-mono);
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
   color: var(--color-gray-700);
+  font-family: "Courier New", Courier, monospace;
 }
 @property --tw-leading {
   syntax: "*";
@@ -673,6 +745,11 @@ h1, h2, h3, h4, h5, h6 {
   inherits: false;
   initial-value: solid;
 }
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
 @property --tw-content {
   syntax: "*";
   initial-value: "";
@@ -694,6 +771,7 @@ h1, h2, h3, h4, h5, h6 {
       --tw-scale-y: 1;
       --tw-scale-z: 1;
       --tw-border-style: solid;
+      --tw-space-y-reverse: 0;
       --tw-content: "";
     }
   }

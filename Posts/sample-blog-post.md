@@ -6,12 +6,11 @@
   "slug": "sample-blog-post"
 }
 ---
-# Understanding the Internet
 
 > The internet is a global network of connected computers that communicate using standardized protocols.
 
 
-## Introduction
+### Introduction
 
 The **Internet** allows devices around the world to exchange information.<br>
 
@@ -37,6 +36,20 @@ People use it for:
 - [MDN Web Docs](https://developer.mozilla.org/)
 - [W3C](https://www.w3.org/)
 - [Cloudflare Learning Center](https://www.cloudflare.com/learning/)
+
+
+## Sample C# Code
+
+```csharp
+using System;
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Hello Internet");
+    }
+}
+```
 
 
 ## Conclusion

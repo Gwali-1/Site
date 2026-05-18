@@ -18,6 +18,26 @@ h1, h2, h3, h4, h5, h6 {
     @apply font-heading text-black tracking-tight;
 }
 
+.prose h1 {
+    @apply text-3xl font-bold mb-6 mt-10;
+}
+
+.prose h2 {
+    @apply text-2xl font-bold mb-4 mt-8;
+}
+
+.prose h3 {
+    @apply text-xl font-bold mb-3 mt-6;
+}
+
+.prose h4 {
+    @apply text-lg font-bold mb-2 mt-4;
+}
+
+.prose h5 {
+    @apply text-base font-bold mb-2 mt-4;
+}
+
 /* Markdown / Typography Overrides */
 .prose {
     --tw-prose-links: var(--color-blue-500);
@@ -31,17 +51,32 @@ h1, h2, h3, h4, h5, h6 {
     @apply border-l-4 border-blue-500 pl-4 italic my-6 text-gray-700;
 }
 
-/* Inline code - more subtle */
-.prose :not(pre) > code {
-    @apply bg-black/5 text-[#DB6B43] px-1.5 py-0.5 rounded font-mono text-[0.85em] before:content-none after:content-none;
+/* Lists */
+.prose ul {
+    @apply list-disc list-outside ml-5 my-4 space-y-2;
 }
 
-/* Multiline code blocks - subtle, reduced spacing */
+.prose ol {
+    @apply list-decimal list-outside ml-5 my-4 space-y-2;
+}
+
+.prose li {
+    @apply pl-1;
+}
+
+/* Inline code - typewriter style */
+.prose :not(pre) > code {
+    @apply bg-black/5 text-[#DB6B43] px-1.5 py-0.5 rounded text-[0.85em] before:content-none after:content-none;
+    font-family: "Courier New", Courier, monospace;
+}
+
+/* Multiline code blocks - subtle, reduced spacing, typewriter font */
 .prose pre {
     @apply bg-gray-900/5 p-3 rounded-lg overflow-x-auto my-4 border border-black/5;
 }
 
 .prose pre code {
-    @apply bg-transparent p-0 text-gray-700 text-sm font-mono;
+    @apply bg-transparent p-0 text-gray-700 text-sm;
+    font-family: "Courier New", Courier, monospace;
 }
 
