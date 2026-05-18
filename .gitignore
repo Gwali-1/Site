@@ -133,3 +133,7 @@ node_modules/
 
 _NCrunch*
 config.json
+
+
+.vscode/
+.idea/

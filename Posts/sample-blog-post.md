@@ -6,14 +6,39 @@
   "slug": "sample-blog-post"
 }
 ---
+# Understanding the Internet
+
+> The internet is a global network of connected computers that communicate using standardized protocols.
 
 
-This is a sample blog post stored as a markdown file.
+## Introduction
 
-You can use **Markdown** syntax here.
+The **Internet** allows devices around the world to exchange information.<br>
 
-- This is a list item
-- Another item
 
-Enjoy writing your blog posts in Markdown!
 
+> I cant eben see<br>
+> What you want
+
+<br>
+
+inlince `code`
+
+People use it for:
+
+- Communication
+- Banking
+- Entertainment
+- Learning
+- Software development
+
+## Useful Resources
+
+- [MDN Web Docs](https://developer.mozilla.org/)
+- [W3C](https://www.w3.org/)
+- [Cloudflare Learning Center](https://www.cloudflare.com/learning/)
+
+
+## Conclusion
+
+The internet powers modern communication and software systems. Understanding its basics helps developers build better applications.

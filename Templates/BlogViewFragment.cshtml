@@ -7,13 +7,13 @@
   <!-- Title + Meta -->
   <header class="mb-8">
       <h1 class="text-4xl font-bold font-[noto] mb-2">@Model.Title</h1>
-      <p class="text-sm text-[#DB6B43]">
-          Published on @Model.Date
+      <p class="text-sm font-semibold text-[#DB6B43]">
+        @Model.Date
       </p>
   </header>
 
   <!-- Content -->
-  <article class="markdown-body max-w-none">
+  <article class="prose prose-slate max-w-none font-semibold text-sm">
       @Raw(Model.Content)
   </article>
 </div>
