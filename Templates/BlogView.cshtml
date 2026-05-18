@@ -44,22 +44,22 @@
     </header>
     <div class="container mx-auto max-w-4xl p-4" id ="response-content"> 
 
-      <div class="mx-auto pt-12">  
 
-        <!-- Title + Meta -->
-        <header class="mb-8">
-            <h1 class="text-4xl font-bold font-[noto] mb-2">@Model.Title</h1>
-            <p class="text-sm text-[#DB6B43]">
-                @Model.Date
-            </p>
-        </header>
+<div class="mx-auto pt-10">  
 
-        <!-- Content -->
-        <article class=" markdown-body max-w-none">
-            @Raw(Model.Content)
-        </article>
-      </div>
-    </div>
+  <!-- Title + Meta -->
+  <header class="mb-8">
+      <h1 class="text-4xl font-bold font-[noto] mb-2">@Model.Title</h1>
+      <p class="text-sm font-semibold text-[#DB6B43]">
+        @Model.Date
+      </p>
+  </header>
+
+  <!-- Content -->
+  <article class="prose prose-slate max-w-none font-semibold text-sm">
+      @Raw(Model.Content)
+  </article>
+</div>
 
     <footer class="container mx-auto mb-1 max-w-4xl pt-12">
 
