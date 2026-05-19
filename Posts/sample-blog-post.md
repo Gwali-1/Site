@@ -1,57 +1,54 @@
 ---
 {
-  "title": "Sample Blog Post",
+  "title": "Why I Like Building Things From Scratch",
   "tags": ["sample", "markdown"],
   "date": "2026-03-20",
   "slug": "sample-blog-post"
 }
 ---
 
-> The internet is a global network of connected computers that communicate using standardized protocols.
+# 
 
+A lot of developers eventually reach a point where they want to understand what is happening underneath the abstractions. For me, that curiosity started when I wrote a small HTTP server using `TcpListener`.
 
-### Introduction
+> Building things from scratch forces you to understand the fundamentals instead of depending entirely on frameworks.
 
-The **Internet** allows devices around the world to exchange information.<br>
+## Things I Learned
 
+- How HTTP requests are structured
+- Why asynchronous programming matters
+- How sockets work underneath web frameworks
+- The difference between blocking and non-blocking operations
 
+Working directly with streams and sockets made concepts feel more real. Something as simple as reading bytes from a stream suddenly became interesting.
 
-> I cant eben see<br>
-> What you want
+## Small Example
 
-<br>
+Inline code can be useful for mentioning methods like `Task.Run`, `await`, or `HttpListener`.
 
-inlince `code`
-
-People use it for:
-
-- Communication
-- Banking
-- Entertainment
-- Learning
-- Software development
-
-## Useful Resources
-
-- [MDN Web Docs](https://developer.mozilla.org/)
-- [W3C](https://www.w3.org/)
-- [Cloudflare Learning Center](https://www.cloudflare.com/learning/)
-
-
-## Sample C# Code
+Here is a simple example:
 
 ```csharp
-using System;
-class Program
+var listener = new TcpListener(IPAddress.Any, 8080);
+
+listener.Start();
+
+while (true)
 {
-    static void Main()
-    {
-        Console.WriteLine("Hello Internet");
-    }
+    var client = await listener.AcceptTcpClientAsync();
+
+    Console.WriteLine("Client connected");
 }
 ```
 
+## Useful Resources
 
-## Conclusion
+- [Microsoft .NET Documentation](https://learn.microsoft.com/dotnet/)
+- [MDN HTTP Overview](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)
+- [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/)
 
-The internet powers modern communication and software systems. Understanding its basics helps developers build better applications.
+## Final Thoughts
+
+I still enjoy using frameworks, but understanding lower-level concepts makes debugging and designing systems much easier.
+
+> The abstractions become more useful once you understand what they are abstracting away.
